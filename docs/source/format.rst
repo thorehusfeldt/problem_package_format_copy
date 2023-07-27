@@ -140,7 +140,10 @@ directory of the package.
 The keys are defined as below. Keys are optional unless explicitly
 stated. Any unknown keys should be treated as an error.
 
-.. rst:directive:: name
+.. object:: name
+    :type: string or map
+    :required: True
+
 
    foo bar
 
