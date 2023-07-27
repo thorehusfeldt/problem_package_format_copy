@@ -137,19 +137,39 @@ Metadata about the problem (e.g., source, license, limits) are provided
 in a UTF-8 encoded YAML file named ``problem.yaml`` placed in the root
 directory of the package.
 
+A typical example is this:
+
+.. example:: yaml
+    name: Hello Moon
+    problem_format_version: 2023-07
+    author: Robin McAuthorson
+    type: pass-fail
+    license: cc by-sa
+
+.. example:: yaml
+    name: Hello Moon
+    problem_format_version: 2023-07
+    author: Robin McAuthorson
+    source: Lunar Collegiate Programming Contest NCPC 2023
+    source_url: lunar.icpc.io
+    license: cc by-sa
+    rights_owner: Miscatonic University
+    type: pass-fail
+    validation:
+        interactive: true
+
 The keys are defined as below. Keys are optional unless explicitly
 stated. Any unknown keys should be treated as an error.
 
 .. object:: name
 
-    **Required**
 
     **Type:** string or map
 
     When `name` is a map, it maps language codes to strings.
 
     .. example:: yaml
-        name: Hello World
+        name: Hello World!
 
     .. example:: yaml
         name: 
@@ -157,126 +177,114 @@ stated. Any unknown keys should be treated as an error.
 	  fr: Bonjour Le Monde!
 	  de: Hallo Welt
 
+    *Required*
+
 .. object:: version
 
     **Type:** string
 
-    When `name` is a map, it maps language codes to strings.  If using this
-    version of the Format must be  the string ``2023-07-draft``. Will be on the
-    form     ``<yyyy>-<mm>`` for a stable version,
+    If using this version of the Format must be  the string ``2023-07-draft``.
+    Will be on the form     ``<yyyy>-<mm>`` for a stable version,
     ``<yyyy>-<mm>-draft`` or ``draft`` for a draft        version, or
     ``legacy`` for the version before the     addition of
     problem_format_version. Documentation for version ``<version>`` is
     available at                 https://www.kattis.com
     /problem-package-format/spec/problem_package_format/. 
 
-    .. code-block:: yaml
-        version: 2023-07
-
-    .. code-block:: yaml
-        version: legacy
-
 .. object:: type
 
     **Type:** string
 
-    In ICPC, `"pass-fail"`
-    In general, `"pass-fail"` or `"scoring"`
+    **Default:** ``"pass-fail"``
+
+    In ICPC, must be `"pass-fail"`
+    In general, can be `"pass-fail"` or `"scoring"`
 
 .. object:: author
+
+    **Type:** string
+
+    Who should get author credits. This would typically   be the people that
+    came up with the idea, wrote the   problem specification and created the
+    test data. This is sometimes omitted when authors choose to instead   only
+    give source credit, but both may be specified.   
+
 .. object:: source
+
+    **Type:** string
+
+    Who should get source credit. This would typically be
+    the name (and year) of the event where the problem 
+    was first used or created for.      
+
+.. object:: source
+
+    **Type:** string
+
+    Link to page for source event. 
+    
+    *Forbidden* if source is not specified.
+
 .. object:: rights_owner
 
     **Type:** string
 
-    Who should get author credits. This would typically   
-    be the people that came up with the idea, wrote the   
-    problem specification and created the test data. This 
-    is sometimes omitted when authors choose to instead   
-    only give source credit, but both may be specified.   
+    Owner of the copyright of the problem. If not present, author is owner. If
+    author is not present either, source is owner. 
+    
+    *Required* if license is something other than ``unknown`` or ``public domain``.
+    
+    *Forbidden* if license is ``public domain``. 
 
-    .. code-block:: yaml
+.. object:: license
 
-        author: Alice McAuthorson and Bob Write
-        source: Lunar CPC Finals 1969
-        rights_owner: Miscatonic University
+    **Type:** string
 
+    **Default:** ``"unkown"``
 
+    License under which the problem may be used. 
+    The possible values are:
 
+    +-----+--------------------------------------+------------------------+
+    | Va  | Comments                             | Link                   |
+    | lue |                                      |                        |
+    +=====+======================================+========================+
+    | unkown   | The default value. In practice means |                        |
+    |     | that the problem can not be used.    |                        |
+    |     |                                      |                        |
+    +-----+--------------------------------------+------------------------+
+    | public | There are no known copyrights on the | http://creativ         |
+    |        | problem, anywhere in the world.      | ecommons.org/about/pdm |
+    | domain |                                      |                        |
+    |        |                                      |                        |
+    +-----+--------------------------------------+------------------------+
+    | cc0 | CC0, “no rights reserved”            | http://creativ         |
+    |     |                                      | ecommons.org/about/cc0 |
+    +-----+--------------------------------------+------------------------+
+    | cc  | CC attribution                       | http://creativecommon  |
+    | by  |                                      | s.org/licenses/by/4.0/ |
+    +-----+--------------------------------------+------------------------+
+    | cc  | CC attribution, share alike          | ht                     |
+    | by-sa  |                                      | tp://creativecommons.o |
+    |  |                                      | rg/licenses/by-sa/4.0/ |
+    +-----+--------------------------------------+------------------------+
+    | educational  | May be freely used for educational   |                        |
+    |     | purposes                             |                        |
+    |     |                                      |                        |
+    |     |                                      |                        |
+    +-----+--------------------------------------+------------------------+
+    | permission   | Used with permission. The author     |                        |
+    |  | must be contacted for every          |                        |
+    |  | additional use.                      |                        |
+    |  |                                      |                        |
+    +-----+--------------------------------------+------------------------+
 
-+---+-----+----+-------------------------------------------------------+
-| K | T   | D  | Comments                                              |
-| e | ype | ef |                                                       |
-| y |     | au |                                                       |
-|   |     | lt |                                                       |
-+===+=====+====+=======================================================+
-+---+-----+----+-------------------------------------------------------+
-| u | Str |    | UUID identifying the problem.                         |
-| u | ing |    |                                                       |
-| i |     |    |                                                       |
-| d |     |    |                                                       |
-+---+-----+----+-------------------------------------------------------+
-| t | Str | p  | One of ``pass-fail`` and ``scoring``.                 |
-| y | ing | as |                                                       |
-| p |     | s- |                                                       |
-| e |     | fa |                                                       |
-|   |     | il |                                                       |
-+---+-----+----+-------------------------------------------------------+
+.. object:: uuid
 
-| r |     |    |                                                       |
-+---+-----+----+-------------------------------------------------------+
-| s | Str |    | Who should get source credit. This would typically be |
-| o | ing |    | the name (and year) of the event where the problem    |
-| u |     |    | was first used or created for.                        |
-| r |     |    |                                                       |
-| c |     |    |                                                       |
-| e |     |    |                                                       |
-+---+-----+----+-------------------------------------------------------+
-| s | Str |    | Link to page for source event. Must not be given if   |
-| o | ing |    | source is not.                                        |
-| u |     |    |                                                       |
-| r |     |    |                                                       |
-| c |     |    |                                                       |
-| e |     |    |                                                       |
-| _ |     |    |                                                       |
-| u |     |    |                                                       |
-| r |     |    |                                                       |
-| l |     |    |                                                       |
-+---+-----+----+-------------------------------------------------------+
-| l | Str | u  | License under which the problem may be used. Value    |
-| i | ing | nk | has to be one of the ones defined below.              |
-| c |     | no |                                                       |
-| e |     | wn |                                                       |
-| n |     |    |                                                       |
-| s |     |    |                                                       |
-| e |     |    |                                                       |
-+---+-----+----+-------------------------------------------------------+
-| r | Str | V  | Owner of the copyright of the problem. If not         |
-| i | ing | al | present, author is owner. If author is not present    |
-| g |     | ue | either, source is owner. Required if license is       |
-| h |     | of | something other than ``unknown`` or                   |
-| t |     | a  | ``public domain``. Forbidden if license is            |
-| s |     | ut | ``public domain``.                                    |
-| _ |     | ho |                                                       |
-| o |     | r, |                                                       |
-| w |     | if |                                                       |
-| n |     | pr |                                                       |
-| e |     | es |                                                       |
-| r |     | en |                                                       |
-|   |     | t, |                                                       |
-|   |     | o  |                                                       |
-|   |     | th |                                                       |
-|   |     | er |                                                       |
-|   |     | wi |                                                       |
-|   |     | se |                                                       |
-|   |     | v  |                                                       |
-|   |     | al |                                                       |
-|   |     | ue |                                                       |
-|   |     | of |                                                       |
-|   |     | s  |                                                       |
-|   |     | ou |                                                       |
-|   |     | rc |                                                       |
-|   |     | e. |                                                       |
+    **Type**: string
+
+    UUID identifying the problem
+
 +---+-----+----+-------------------------------------------------------+
 | l | Map | s  |                                                       |
 | i | w   | ee |                                                       |
@@ -331,39 +339,6 @@ Allowed values for license.
 Values other than *unknown* or *public domain* requires rights_owner to
 have a value.
 
-+-----+--------------------------------------+------------------------+
-| Va  | Comments                             | Link                   |
-| lue |                                      |                        |
-+=====+======================================+========================+
-| u   | The default value. In practice means |                        |
-| nkn | that the problem can not be used.    |                        |
-| own |                                      |                        |
-+-----+--------------------------------------+------------------------+
-| pub | There are no known copyrights on the | http://creativ         |
-| lic | problem, anywhere in the world.      | ecommons.org/about/pdm |
-| dom |                                      |                        |
-| ain |                                      |                        |
-+-----+--------------------------------------+------------------------+
-| cc0 | CC0, “no rights reserved”            | http://creativ         |
-|     |                                      | ecommons.org/about/cc0 |
-+-----+--------------------------------------+------------------------+
-| cc  | CC attribution                       | http://creativecommon  |
-| by  |                                      | s.org/licenses/by/4.0/ |
-+-----+--------------------------------------+------------------------+
-| cc  | CC attribution, share alike          | ht                     |
-| by  |                                      | tp://creativecommons.o |
-| -sa |                                      | rg/licenses/by-sa/4.0/ |
-+-----+--------------------------------------+------------------------+
-| ed  | May be freely used for educational   |                        |
-| uca | purposes                             |                        |
-| tio |                                      |                        |
-| nal |                                      |                        |
-+-----+--------------------------------------+------------------------+
-| p   | Used with permission. The author     |                        |
-| erm | must be contacted for every          |                        |
-| iss | additional use.                      |                        |
-| ion |                                      |                        |
-+-----+--------------------------------------+------------------------+
 
 Limits
 ~~~~~~
