@@ -4,10 +4,6 @@ Problem Package Format
 This is the ``2023-07-draft`` version of the Kattis problem package
 format.
 
-There are two variants of this specification: the Full version, and the
-ICPC subset. Use the buttons in the sidebar to select one of them. The
-unified view shows text that is not in the ICPC-subset in red.
-
 Overview
 --------
 
@@ -52,7 +48,7 @@ file or the name of the directory. There can’t be two programs of the
 same kind with the same name.
 
 Validators, but not submissions, in the form of a directory may include
-two POSIX-compliant scripts “build” and “run”. If at least one of these
+two POSIX-compliant scripts ``build`` and ``run``. If at least one of these
 two files is included:
 
 1. First, if the ``build`` script is present, it will be run. The
@@ -116,9 +112,10 @@ entry point in the table below will be used.
 | scala    | Scala     |                    | .scala                   |
 +----------+-----------+--------------------+--------------------------+
 
-New in version ``2023-07``: ``.py`` files now default to Python 3, and
-using shebangs are no longer supported; Python 2 has to be explicitly
-indicated by the ``.py2`` extension.
+.. versionadded:: 2.1
+
+   ``.py`` files now default to Python 3, and using shebangs are no longer supported; 
+   Python 2 has to be explicitly indicated by the ``.py2`` extension.
 
 .. container:: not-icpc
 
