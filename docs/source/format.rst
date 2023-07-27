@@ -112,7 +112,7 @@ entry point in the table below will be used.
 | scala    | Scala     |                    | .scala                   |
 +----------+-----------+--------------------+--------------------------+
 
-.. versionadded:: 2.1
+.. versionadded:: 2.0
 
    ``.py`` files now default to Python 3, and using shebangs are no longer supported; 
    Python 2 has to be explicitly indicated by the ``.py2`` extension.
@@ -139,6 +139,10 @@ directory of the package.
 
 The keys are defined as below. Keys are optional unless explicitly
 stated. Any unknown keys should be treated as an error.
+
+.. rst:directive:: name
+
+   foo bar
 
 +---+-----+----+-------------------------------------------------------+
 | K | T   | D  | Comments                                              |
