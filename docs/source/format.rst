@@ -140,6 +140,7 @@ directory of the package.
 A typical example is this:
 
 .. code-block:: yaml
+
     name: Hello Moon
     problem_format_version: 2023-07
     author: Robin McAuthorson
@@ -147,6 +148,7 @@ A typical example is this:
     license: cc by-sa
 
 .. code-block:: yaml
+
     name: Hello Moon
     problem_format_version: 2023-07
     author: Robin McAuthorson
@@ -169,9 +171,11 @@ stated. Any unknown keys should be treated as an error.
     When `name` is a map, it maps language codes to strings.
 
     .. code-block:: yaml
+
         name: Hello World!
 
     .. code-block:: yaml
+
         name: 
 	  en: Hello World!
 	  fr: Bonjour Le Monde!
@@ -245,39 +249,22 @@ stated. Any unknown keys should be treated as an error.
     License under which the problem may be used. 
     The possible values are:
 
-    +-----+--------------------------------------+------------------------+
-    | Va  | Comments                             | Link                   |
-    | lue |                                      |                        |
-    +=====+======================================+========================+
-    | unkown   | The default value. In practice means |                        |
-    |     | that the problem can not be used.    |                        |
-    |     |                                      |                        |
-    +-----+--------------------------------------+------------------------+
-    | public | There are no known copyrights on the | http://creativ         |
-    |        | problem, anywhere in the world.      | ecommons.org/about/pdm |
-    | domain |                                      |                        |
-    |        |                                      |                        |
-    +-----+--------------------------------------+------------------------+
-    | cc0 | CC0, “no rights reserved”            | http://creativ         |
-    |     |                                      | ecommons.org/about/cc0 |
-    +-----+--------------------------------------+------------------------+
-    | cc  | CC attribution                       | http://creativecommon  |
-    | by  |                                      | s.org/licenses/by/4.0/ |
-    +-----+--------------------------------------+------------------------+
-    | cc  | CC attribution, share alike          | ht                     |
-    | by-sa  |                                      | tp://creativecommons.o |
-    |  |                                      | rg/licenses/by-sa/4.0/ |
-    +-----+--------------------------------------+------------------------+
-    | educational  | May be freely used for educational   |                        |
-    |     | purposes                             |                        |
-    |     |                                      |                        |
-    |     |                                      |                        |
-    +-----+--------------------------------------+------------------------+
-    | permission   | Used with permission. The author     |                        |
-    |  | must be contacted for every          |                        |
-    |  | additional use.                      |                        |
-    |  |                                      |                        |
-    +-----+--------------------------------------+------------------------+
+    ``unkown``:
+        The default value. In practice means that the problem can not be used.
+    ``public domain``:
+      There are no known copyrights on the 
+	     problem, anywhere in the world. See
+	     http://creativecommons.org/about/pdm 
+    ``cc0``:
+        CC0, “no rights reserved”. See http://creativecommons.org/about/cc0 
+    ``cc by``:
+       CC attribution. See http://creativecommons.org/licenses/by/4.0
+    ``cc by-sa``:
+      CC attribution, share alike; see http://creativecommons.org/licenses/by-sa/4.0
+    ``educational``:
+        May be freely used for educational purposes.
+    ``permission``:
+          Used with permission. The author must be contacted for every additional use.                
 
 .. object:: uuid
 
@@ -290,52 +277,44 @@ stated. Any unknown keys should be treated as an error.
     **Type**: map
 
     A map defining various limits on the behaviour of an accepted submission,
-    in particular on its running time.
+    Three keys, all option, determine the running time.
 
-    The other fiels are also all optional:
+    ``time_multipliers``
+        is itself a map defining the values ``ac_to_time_limit`` and ``time_limit_to_tle``.
+    ``time_resolution``
+        a number; the default is ``1.0``.
+    ``time_limit``
+        a number, in seconds, that determines the upper bound on the running time of a solution.
 
-    +---------------+----------------------+-----------+------------------+
-    | Key           | Comments             | Default   | Typical system   |
-    |               |                      |           | default          |
-    +===============+======================+===========+==================+
-    | tim           |              | see below |                  |
-    | e_multipliers |                      |           |                  |
-    +---------------+----------------------+-----------+------------------+
-    | time_limit    |  float, in   | see below |                  |
-    |               | seconds              |           |                  |
-    +---------------+----------------------+-----------+------------------+
-    | ti            |  float, in   | 1.0       |                  |
-    | me_resolution | seconds              |           |                  |
-    +---------------+----------------------+-----------+------------------+
-    | memory        | in MiB     | system    | 2048             |
-    |               |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | output        | in MiB     | system    | 8                |
-    |               |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | code          | in kiB     | system    | 128              |
-    |               |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | com           | in seconds | system    | 60               |
-    | pilation_time |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | compi         | in MiB     | system    | 2048             |
-    | lation_memory |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | va            | in seconds | system    | 60               |
-    | lidation_time |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | vali          | in MiB     | system    | 2048             |
-    | dation_memory |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
-    | vali          | in MiB     | system    | 8                |
-    | dation_output |                      | default   |                  |
-    +---------------+----------------------+-----------+------------------+
+    See :ref:`Problem Timing`.
 
-For most keys the system default will be used if nothing is specified.
-This can vary, but you SHOULD assume that it’s reasonable. Only specify
-limits when the problem needs a specific limit, but do specify limits
-even if the “typical system default” is what is needed.
+    The remaining keys of `limits`, also all optional, take integer values.
+    Their default values are  system-dependent.
+
+    =====================  ====     ======================
+    Key                    Unit     Typical System Default
+    =====================  ====     ======================
+    ``memory``             MiB      2048
+    ``output``             MiB      8
+    ``code``               kiB      128
+    ``compilation time``   seconds  60
+    ``compilation memory`` MiB      2048
+    ``compilation time``   seconds  60
+    ``validation memory``  MiB      2048
+    ``validation output``  MiB      8
+    =====================  ====     ======================
+
+    System defaults can vary, but you *should* assume that it’s reasonable. Only specify
+    these limits when the problem needs a specific limit, but *do* specify limits
+    even if the “typical system default” is what is needed.
+
+    .. code_block:: yaml
+
+	# Submission can use at most 1kB of code and must terminate in half a second
+        limits:
+	    time_limit: 0.5
+	code:
+	    1
 
 .. object:: validation
 
@@ -344,7 +323,6 @@ even if the “typical system default” is what is needed.
     **Default**: ``"default"``
 
     Describes the behaviour of the output validator.
-
     If a string, must be either ``"default"`` or ``"custom"``.
     If a map, contains any of three boolean keys:
 
@@ -357,6 +335,19 @@ even if the “typical system default” is what is needed.
 	 indicates that the submission should run multiple 
 	 times with inputs generated by the validator, and    
 
+    ..code-block:: yaml
+    
+        name: Guess
+        validation:
+            interactive: true
+
+    ..code-block:: yaml
+    
+        name: Problem With Interactive Scoring Validator
+	type: scoring
+        validation:
+            scoring: true
+            interactive: true
 
 .. object:: keywords
 
@@ -368,7 +359,12 @@ even if the “typical system default” is what is needed.
 
     **Type**: the string ``"all"`` or a list of strings
 
+    *Not ICPC*
+
     List of programming languages or the string ``all``. 
+
+    If a list is given, the problem may only be solved using those
+    programming languages.
 
     .. code-block:: yaml
 
@@ -376,51 +372,74 @@ even if the “typical system default” is what is needed.
 
 
 
-
 Problem Timing
-^^^^^^^^^^^^^^
+--------------
 
-``time_multipliers`` is a map with the following keys:
+Problem timing is determined by the time-related keys of `limits` in `problem.yaml`.
 
-================= ======== =======
-Key               Comments Default
-================= ======== =======
-ac_to_time_limit  float    2.0
-time_limit_to_tle float    1.5
-================= ======== =======
+The preferred way is to let judging system _infer_ the time limit base on `time_multipliers` and `time_resolution` and the example submissions.
 
-The value of ``time_limit`` is an integer or floating-point problem time
-limit, in seconds. The time multipliers specify safety margins relative
-to the slowest accepted submission ``T_ac`` and fastest
-time_limit_exceeded submission ``T_tle``. The ``time_limit`` must
+.. code-block:: yaml
+
+    name: Hello Mars!
+    limits:
+      time_multipliers:
+        ac_to_time_limit: 1
+        time_limit_to_tle: 1.2
+      time_resolution:
+        .5
+
+.. object:: ``time_multipliers``
+
+    **Type:** map with the following keys and defaults:
+
+    ================= ======== =======
+    Key               Type     Default
+    ================= ======== =======
+    ac_to_time_limit  number   2.0
+    time_limit_to_tle number   1.5
+    ================= ======== =======
+
+    The time multipliers specify safety margins relative to accepted and rejected solutions, see below.
+
+.. object:: ``time_resolution``
+
+    **Type:**  number
+
+    **Default** 1.0
+
+    *Forbidden* if `time_limit` is specified.
+    (In particular, `time_limit` is not required to be a multiple of the resolution).
+
+.. object:: ``time_limit``
+
+    **Type:**  number
+
+    **Default** Computed, see below
+
+
+Let ``T_ac`` denote the running time of the slowest accepted submission.
+Let ``T_tle`` denote the running time fastest time_limit_exceeded submission, 
+or infinity if the problem does not provide at least one time_limit_exceeded submission.
+
+The value of ``time_limit`` must
 satisfy ``T_ac * ac_to_time_limit <= time_limit`` and
-``time_limit * time_limit_to_tle <= T_tle``. In these calculations,
-``T_tle`` is treated as infinity if the problem does not provide at
-least one time_limit_exceeded submission.
-
+``time_limit * time_limit_to_tle <= T_tle``. 
 If no ``time_limit`` is provided, the default value is the smallest
-integer multiple of ``time_resolution`` that satisfies the above
-inequalities. It is an error if no such multiple exists. The
-``time_resolution`` key is ignored if the problem provides an explicit
-time limit (and in particular, the time limit is not required to be a
-multiple of the resolution). Since time multipliers are more
-future-proof than absolute time limits, avoid specifying ``time_limit``
-whenever practical.
+integer multiple of ``time_resolution`` that satisfies these 
+inequalities. It is an error if no such multiple exists.
 
-Contest systems should make a best effort to respect the problem time
-limit, and should warn when importing a problem whose time limit is
-specified with precision greater than can be resolved by system timers.
+.. note ::
 
-.. container:: not-icpc
+    Since time multipliers are more future-proof than absolute time limits, 
+    avoid specifying ``time_limit`` whenever practical.
 
-   .. rubric:: Languages
-      :name: languages
+.. note ::
+    Contest systems should make a best effort to respect the problem time
+    limit, and should warn when importing a problem whose time limit is
+    specified with precision greater than can be resolved by system timers.
 
-   A list of programming language codes from the table in the overview
-   section or ``all``.
 
-   If a list is given, the problem may only be solved using those
-   programming languages.
 
 Problem Statements
 ------------------
@@ -832,7 +851,7 @@ line parameters and the output stream to validate on stdin.
 
 The validator should be possible to use as follows on the command line:
 
-.. code:: sh
+.. code-block:: sh
 
    ./validator input judge_answer feedback_dir [additional_arguments] < team_output [ > team_input ]
 
