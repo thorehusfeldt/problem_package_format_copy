@@ -1,15 +1,11 @@
-.. container:: not-icpc
+Core Format for Pass–Fail Problems
+==================================
 
-   .. rubric:: Problem Types
-      :name: problem-types
-
-   There are two types of problems: pass-fail problems and scoring
-   problems. In pass-fail problems, submissions are basically judged as
-   either accepted or rejected (though the “rejected” judgement is more
-   fine-grained and divided into results such as “Wrong Answer”, “Time
-   Limit Exceeded”, etc). In scoring problems, a submission that is
-   accepted is additionally given a score, which is a numeric value (and
-   the goal is to maximize this value).
+There are two types of problems: pass-fail problems and scoring
+problems. In pass-fail problems, submissions are basically judged as
+either accepted or rejected (though the “rejected” judgement is more
+fine-grained and divided into results such as “Wrong Answer”, “Time
+Limit Exceeded”, etc).
 
 Problem Metadata
 ----------------
@@ -388,26 +384,6 @@ privileged information illustrating the related test file.
 Input, answer, description, hint and image files are matched by the base
 name.
 
-Interactive Problems
-~~~~~~~~~~~~~~~~~~~~
-
-For interactive problems, any sample test cases must provide an
-interaction protocol with the extension ``.interaction`` for each sample
-demonstrating the communication between the submission and the output
-validator, meant to be displayed in the problem statement. An
-interaction protocol consists of a series of lines starting with ``>``
-and ``<``. Lines starting with ``>`` signify an output from the
-submission to the output validator, while ``<`` signify an input from
-the output validator to the submission.
-
-A sample test case may have just an ``.interaction`` file without a
-corresponding ``.in`` and ``.ans`` file. However, if either of a ``.in``
-or a ``.ans`` file is present the other one must also be present. Unlike
-``.in`` and ``.ans`` files for non-interactive problem, interactive
-``.in`` and ``.ans`` files must not be displayed to teams: not in the
-problem statement, nor as part of sample input download. If you want to
-provide files related to interactive problems (such as testing tools or
-input files) you can use `attachments <#attachments>`__.
 
 Test Data Groups
 ~~~~~~~~~~~~~~~~

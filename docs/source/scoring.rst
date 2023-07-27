@@ -3,6 +3,10 @@ Scoring Problems
 
 Nothing of this is part of the ICPC specification.
 
+In scoring problems, a submission that is
+accepted is additionally given a score, which is a numeric value (and
+the goal is to maximize this value).
+
 
 Test Data Settings
 ------------------
