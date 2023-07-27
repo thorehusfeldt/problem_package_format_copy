@@ -221,7 +221,7 @@ stated. Any unknown keys should be treated as an error.
     the name (and year) of the event where the problem 
     was first used or created for.      
 
-.. object:: source
+.. object:: source_url
 
     **Type:** string
 
@@ -277,7 +277,7 @@ stated. Any unknown keys should be treated as an error.
     **Type**: map
 
     A map defining various limits on the behaviour of an accepted submission,
-    Three keys, all option, determine the running time.
+    Three keys, all optional, determine the time limit:
 
     ``time_multipliers``
         is itself a map defining the values ``ac_to_time_limit`` and ``time_limit_to_tle``.
@@ -375,9 +375,9 @@ stated. Any unknown keys should be treated as an error.
 Problem Timing
 --------------
 
-Problem timing is determined by the time-related keys of `limits` in `problem.yaml`.
-
-The preferred way is to let judging system _infer_ the time limit base on `time_multipliers` and `time_resolution` and the example submissions.
+Problem timing is determined by the timing-related keys of `limits` in `problem.yaml`.
+The preferred way is to let the judging system *infer* a sensible the time limit from the example submissions,
+possibly using the keys `time_multipliers` and `time_resolution`.
 
 .. code-block:: yaml
 
@@ -389,7 +389,7 @@ The preferred way is to let judging system _infer_ the time limit base on `time_
       time_resolution:
         .5
 
-.. object:: ``time_multipliers``
+.. object:: time_multipliers
 
     **Type:** map with the following keys and defaults:
 
@@ -400,9 +400,9 @@ The preferred way is to let judging system _infer_ the time limit base on `time_
     time_limit_to_tle number   1.5
     ================= ======== =======
 
-    The time multipliers specify safety margins relative to accepted and rejected solutions, see below.
+    The time multipliers specify safety margins relative to the example submissions, see below.
 
-.. object:: ``time_resolution``
+.. object:: time_resolution
 
     **Type:**  number
 
@@ -411,15 +411,15 @@ The preferred way is to let judging system _infer_ the time limit base on `time_
     *Forbidden* if `time_limit` is specified.
     (In particular, `time_limit` is not required to be a multiple of the resolution).
 
-.. object:: ``time_limit``
+.. object:: time_limit
 
     **Type:**  number
 
     **Default** Computed, see below
 
 
-Let ``T_ac`` denote the running time of the slowest accepted submission.
-Let ``T_tle`` denote the running time fastest time_limit_exceeded submission, 
+Let ``T_ac`` denote the running time of the slowest accepted example submission.
+Let ``T_tle`` denote the running time fastest time_limit_exceeded example submission, 
 or infinity if the problem does not provide at least one time_limit_exceeded submission.
 
 The value of ``time_limit`` must
@@ -560,97 +560,56 @@ Test files and groups will be used in lexicographical order on file base
 name. If a specific order is desired a numbered prefix such as ``00``,
 ``01``, ``02``, ``03``, and so on, can be used.
 
-.. container:: not-icpc
 
-   In each test data group, a file ``testdata.yaml`` may be placed to
-   specify how the result of the test data group should be computed. If
-   a test data group has no ``testdata.yaml`` file, the
-   ``testdata.yaml`` in the closest ancestor group that has one will be
-   used. If there is no ``testdata.yaml`` file in the root ``data``
-   group, one is implicitly added with the default values.
+Test Data Settings
+~~~~~~~~~~~~~~~~~~
 
-   The format of ``testdata.yaml`` is as follows:
+In each test data group, a file ``testdata.yaml`` may be placed to
+specify how the result of the test data group should be computed. If
+a test data group has no ``testdata.yaml`` file, the
+``testdata.yaml`` in the closest ancestor group that has one will be
+used. If there is no ``testdata.yaml`` file in the root ``data``
+group, one is implicitly added with the default values.
 
-   +---+----+---+----------------------------------------------------------+
-   | K | Ty | D | Comments                                                 |
-   | e | pe | e |                                                          |
-   | y |    | f |                                                          |
-   |   |    | a |                                                          |
-   |   |    | u |                                                          |
-   |   |    | l |                                                          |
-   |   |    | t |                                                          |
-   +===+====+===+==========================================================+
-   | g | M  | ` | Description of how the results of the group test cases   |
-   | r | ap | S | and subgroups should be aggregated.                      |
-   | a |    | e |                                                          |
-   | d |    | e |                                                          |
-   | i |    | G |                                                          |
-   | n |    | r |                                                          |
-   | g |    | a |                                                          |
-   |   |    | d |                                                          |
-   |   |    | i |                                                          |
-   |   |    | n |                                                          |
-   |   |    | g |                                                          |
-   |   |    |   |                                                          |
-   |   |    | < |                                                          |
-   |   |    | # |                                                          |
-   |   |    | g |                                                          |
-   |   |    | r |                                                          |
-   |   |    | a |                                                          |
-   |   |    | d |                                                          |
-   |   |    | i |                                                          |
-   |   |    | n |                                                          |
-   |   |    | g |                                                          |
-   |   |    | > |                                                          |
-   |   |    | ` |                                                          |
-   |   |    | _ |                                                          |
-   |   |    | _ |                                                          |
-   +---+----+---+----------------------------------------------------------+
-   | i | St | e | Arguments passed to each input validator for this test   |
-   | n | ri | m | data group. If a string then those are the flags that    |
-   | p | ng | p | will be passed to each input validator for this test     |
-   | u | or | t | data group. If a map then each key is the name of the    |
-   | t | m  | y | input validator and the value is the flags to pass to    |
-   | _ | ap | s | that input validator for this test data group.           |
-   | v | of | t | Validators not present in the map are run without flags. |
-   | a | s  | r |                                                          |
-   | l | tr | i |                                                          |
-   | i | in | n |                                                          |
-   | d | gs | g |                                                          |
-   | a | to |   |                                                          |
-   | t | s  |   |                                                          |
-   | o | tr |   |                                                          |
-   | r | in |   |                                                          |
-   | _ | gs |   |                                                          |
-   | f |    |   |                                                          |
-   | l |    |   |                                                          |
-   | a |    |   |                                                          |
-   | g |    |   |                                                          |
-   | s |    |   |                                                          |
-   +---+----+---+----------------------------------------------------------+
-   | o | St | e | Arguments passed to the output validator for this test   |
-   | u | ri | m | data group.                                              |
-   | t | ng | p |                                                          |
-   | p |    | t |                                                          |
-   | u |    | y |                                                          |
-   | t |    | s |                                                          |
-   | _ |    | t |                                                          |
-   | v |    | r |                                                          |
-   | a |    | i |                                                          |
-   | l |    | n |                                                          |
-   | i |    | g |                                                          |
-   | d |    |   |                                                          |
-   | a |    |   |                                                          |
-   | t |    |   |                                                          |
-   | o |    |   |                                                          |
-   | r |    |   |                                                          |
-   | _ |    |   |                                                          |
-   | f |    |   |                                                          |
-   | l |    |   |                                                          |
-   | a |    |   |                                                          |
-   | g |    |   |                                                          |
-   | s |    |   |                                                          |
-   +---+----+---+----------------------------------------------------------+
+The following keys can be given in ``testdata.yaml``
+
+.. object:: output_validator_flags
+    
+    **Type**: string
+
+    **Default**: ``""``
+
+.. object:: input_validator_flags
+    
+    **Type**: string or map
+
+    **Default**: ``""``
+
+    Arguments passed to each input validator for this test data group. If a
+    string then those are the flags that will be passed to each input
+    validator for this test data group. If a map then each key is the name
+    of the input validator and the value is the flags to pass to that input
+    validator for this test data group. Validators not present in the
+    map are run without flags.
+
+    .. code-block:: yaml
+    
+        input_validator_flags: --max_n 500 connected
+
+    .. code-block:: yaml
+    
+        input_validator_flags:
+          topology: connected
+          bounds: --max_n 50
+     
+.. object:: grading
+    
+    **Type**: map
+
+    Description of how the results of the group test cases 
+    and subgroups should be aggregated.                    
+    See :ref:`Grading`.
+
 
 Invalid Input Files
 ~~~~~~~~~~~~~~~~~~~
