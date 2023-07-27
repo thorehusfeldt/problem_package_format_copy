@@ -1,34 +1,1060 @@
-Usage
-=====
+Problem Package Format
+======================
 
-.. _installation:
+This is the ``2023-07-draft`` version of the Kattis problem package
+format.
 
-Installation
-------------
+There are two variants of this specification: the Full version, and the
+ICPC subset. Use the buttons in the sidebar to select one of them. The
+unified view shows text that is not in the ICPC-subset in red.
 
-To use Lumache, first install it using pip:
+Overview
+--------
 
-.. code-block:: console
+This document describes the format of a *Kattis problem package*, used
+for distributing and sharing problems for algorithmic programming
+contests as well as educational use.
 
-   (.venv) $ pip install lumache
+General Requirements
+~~~~~~~~~~~~~~~~~~~~
 
-Creating recipes
+The package consists of a single directory containing files as described
+below. The name of the directory must consist solely of lower case
+letters a-z and digits 0-9. Alternatively it can be a ZIP compressed
+archive of such a directory with identical base name and extension
+``.kpp`` or ``.zip``.
+
+All file names for files included in the package must match the
+following regexp:
+
+``[a-zA-Z0-9][a-zA-Z0-9_.-]*[a-zA-Z0-9]``
+
+I.e., it must be of length at least 2, consist solely of lower or upper
+case letters a-z, A-Z, digits 0-9, period, dash or underscore, but must
+not begin or end with period, dash or underscore.
+
+All text files for a problem must be UTF-8 encoded and not have a byte
+order mark.
+
+All floating point numbers must be given as the external character
+sequences defined by IEEE 754-2008 and may use up to double precision.
+
+Programs
+~~~~~~~~
+
+There are a number of different kinds of programs that may be provided
+in the problem package: submissions, input validators, and output
+validators. All programs are always represented by a single file or
+directory. In other words, if a program consists of several files, these
+must be provided in a single directory. The name of the program, for the
+purpose of referring to it within the package is the base name of the
+file or the name of the directory. There can’t be two programs of the
+same kind with the same name.
+
+Validators, but not submissions, in the form of a directory may include
+two POSIX-compliant scripts “build” and “run”. If at least one of these
+two files is included:
+
+1. First, if the ``build`` script is present, it will be run. The
+   working directory will be (a copy of) the program directory. The
+   ``run`` file must exist after ``build`` is done.
+2. Then, the ``run`` file (which now exists) must be executable, and
+   will be invoked in the same way as a single file program.
+
+Programs without ``build`` and ``run`` scripts are built and run
+according to what language is used. Language is determined by looking at
+the file endings. If a single language from the table below can’t be
+determined, building fails.
+
+For languages where there could be several entry points, the default
+entry point in the table below will be used.
+
++----------+-----------+--------------------+--------------------------+
+| Code     | Language  | Default entry      | File endings             |
+|          |           | point              |                          |
++==========+===========+====================+==========================+
+| c        | C         |                    | .c                       |
++----------+-----------+--------------------+--------------------------+
+| cpp      | C++       |                    | .cc, .cpp, .cxx, .c++,   |
+|          |           |                    | .C                       |
++----------+-----------+--------------------+--------------------------+
+| csharp   | C#        |                    | .cs                      |
++----------+-----------+--------------------+--------------------------+
+| go       | Go        |                    | .go                      |
++----------+-----------+--------------------+--------------------------+
+| haskell  | Haskell   |                    | .hs                      |
++----------+-----------+--------------------+--------------------------+
+| java     | Java      | Main               | .java                    |
++----------+-----------+--------------------+--------------------------+
+| ja       | J         | main.js            | .js                      |
+| vascript | avaScript |                    |                          |
++----------+-----------+--------------------+--------------------------+
+| kotlin   | Kotlin    | MainKt             | .kt                      |
++----------+-----------+--------------------+--------------------------+
+| lisp     | Common    | main.{lisp,cl}     | .lisp, .cl               |
+|          | Lisp      |                    |                          |
++----------+-----------+--------------------+--------------------------+
+| ob       | Ob        |                    | .m                       |
+| jectivec | jective-C |                    |                          |
++----------+-----------+--------------------+--------------------------+
+| ocaml    | OCaml     |                    | .ml                      |
++----------+-----------+--------------------+--------------------------+
+| pascal   | Pascal    |                    | .pas                     |
++----------+-----------+--------------------+--------------------------+
+| php      | PHP       | main.php           | .php                     |
++----------+-----------+--------------------+--------------------------+
+| prolog   | Prolog    |                    | .pl                      |
++----------+-----------+--------------------+--------------------------+
+| python2  | Python 2  | main.py2           | .py2                     |
++----------+-----------+--------------------+--------------------------+
+| python3  | Python 3  | main.py            | .py                      |
++----------+-----------+--------------------+--------------------------+
+| ruby     | Ruby      |                    | .rb                      |
++----------+-----------+--------------------+--------------------------+
+| rust     | Rust      |                    | .rs                      |
++----------+-----------+--------------------+--------------------------+
+| scala    | Scala     |                    | .scala                   |
++----------+-----------+--------------------+--------------------------+
+
+New in version ``2023-07``: ``.py`` files now default to Python 3, and
+using shebangs are no longer supported; Python 2 has to be explicitly
+indicated by the ``.py2`` extension.
+
+.. container:: not-icpc
+
+   .. rubric:: Problem Types
+      :name: problem-types
+
+   There are two types of problems: pass-fail problems and scoring
+   problems. In pass-fail problems, submissions are basically judged as
+   either accepted or rejected (though the “rejected” judgement is more
+   fine-grained and divided into results such as “Wrong Answer”, “Time
+   Limit Exceeded”, etc). In scoring problems, a submission that is
+   accepted is additionally given a score, which is a numeric value (and
+   the goal is to maximize this value).
+
+Problem Metadata
 ----------------
 
-To retrieve a list of random ingredients,
-you can use the ``lumache.get_random_ingredients()`` function:
+Metadata about the problem (e.g., source, license, limits) are provided
+in a UTF-8 encoded YAML file named ``problem.yaml`` placed in the root
+directory of the package.
 
-.. autofunction:: lumache.get_random_ingredients
+The keys are defined as below. Keys are optional unless explicitly
+stated. Any unknown keys should be treated as an error.
 
-The ``kind`` parameter should be either ``"meat"``, ``"fish"``,
-or ``"veggies"``. Otherwise, :py:func:`lumache.get_random_ingredients`
-will raise an exception.
++---+-----+----+-------------------------------------------------------+
+| K | T   | D  | Comments                                              |
+| e | ype | ef |                                                       |
+| y |     | au |                                                       |
+|   |     | lt |                                                       |
++===+=====+====+=======================================================+
+| p | Str | `` | Version of the Problem Package Format used for this   |
+| r | ing | le | package. If using this version of the Format must be  |
+| o |     | ga | the string ``2023-07-draft``. Will be on the form     |
+| b |     | cy | ``<yyyy>-<mm>`` for a stable version,                 |
+| l |     | `` | ``<yyyy>-<mm>-draft`` or ``draft`` for a draft        |
+| e |     |    | version, or ``legacy`` for the version before the     |
+| m |     |    | addition of problem_format_version. Documentation for |
+| _ |     |    | version ``<version>`` is available at                 |
+| f |     |    | https://www.kattis.com                                |
+| o |     |    | /problem-package-format/spec/problem_package_format/. |
+| r |     |    |                                                       |
+| m |     |    |                                                       |
+| a |     |    |                                                       |
+| t |     |    |                                                       |
+| _ |     |    |                                                       |
+| v |     |    |                                                       |
+| e |     |    |                                                       |
+| r |     |    |                                                       |
+| s |     |    |                                                       |
+| i |     |    |                                                       |
+| o |     |    |                                                       |
+| n |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| n | Str |    | Required. If a string this is the name of the problem |
+| a | ing |    | in English. If a map the keys are language codes and  |
+| m | or  |    | the values are the name of the problem in that        |
+| e | map |    | language. It is an error for a language to be missing |
+|   | of  |    | if there exists a problem statement for that          |
+|   | s   |    | language.                                             |
+|   | tri |    |                                                       |
+|   | ngs |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| u | Str |    | UUID identifying the problem.                         |
+| u | ing |    |                                                       |
+| i |     |    |                                                       |
+| d |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| t | Str | p  | One of ``pass-fail`` and ``scoring``.                 |
+| y | ing | as |                                                       |
+| p |     | s- |                                                       |
+| e |     | fa |                                                       |
+|   |     | il |                                                       |
++---+-----+----+-------------------------------------------------------+
+| a | Str |    | Who should get author credits. This would typically   |
+| u | ing |    | be the people that came up with the idea, wrote the   |
+| t |     |    | problem specification and created the test data. This |
+| h |     |    | is sometimes omitted when authors choose to instead   |
+| o |     |    | only give source credit, but both may be specified.   |
+| r |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| s | Str |    | Who should get source credit. This would typically be |
+| o | ing |    | the name (and year) of the event where the problem    |
+| u |     |    | was first used or created for.                        |
+| r |     |    |                                                       |
+| c |     |    |                                                       |
+| e |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| s | Str |    | Link to page for source event. Must not be given if   |
+| o | ing |    | source is not.                                        |
+| u |     |    |                                                       |
+| r |     |    |                                                       |
+| c |     |    |                                                       |
+| e |     |    |                                                       |
+| _ |     |    |                                                       |
+| u |     |    |                                                       |
+| r |     |    |                                                       |
+| l |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| l | Str | u  | License under which the problem may be used. Value    |
+| i | ing | nk | has to be one of the ones defined below.              |
+| c |     | no |                                                       |
+| e |     | wn |                                                       |
+| n |     |    |                                                       |
+| s |     |    |                                                       |
+| e |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| r | Str | V  | Owner of the copyright of the problem. If not         |
+| i | ing | al | present, author is owner. If author is not present    |
+| g |     | ue | either, source is owner. Required if license is       |
+| h |     | of | something other than ``unknown`` or                   |
+| t |     | a  | ``public domain``. Forbidden if license is            |
+| s |     | ut | ``public domain``.                                    |
+| _ |     | ho |                                                       |
+| o |     | r, |                                                       |
+| w |     | if |                                                       |
+| n |     | pr |                                                       |
+| e |     | es |                                                       |
+| r |     | en |                                                       |
+|   |     | t, |                                                       |
+|   |     | o  |                                                       |
+|   |     | th |                                                       |
+|   |     | er |                                                       |
+|   |     | wi |                                                       |
+|   |     | se |                                                       |
+|   |     | v  |                                                       |
+|   |     | al |                                                       |
+|   |     | ue |                                                       |
+|   |     | of |                                                       |
+|   |     | s  |                                                       |
+|   |     | ou |                                                       |
+|   |     | rc |                                                       |
+|   |     | e. |                                                       |
++---+-----+----+-------------------------------------------------------+
+| l | Map | s  |                                                       |
+| i | w   | ee |                                                       |
+| m | ith | de |                                                       |
+| i | k   | fi |                                                       |
+| t | eys | ni |                                                       |
+| s | as  | ti |                                                       |
+|   | d   | on |                                                       |
+|   | efi | b  |                                                       |
+|   | ned | el |                                                       |
+|   | be  | ow |                                                       |
+|   | low |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| v | Str | d  | One of ``default`` or ``custom``. If ``custom``, may  |
+| a | ing | ef | be followed by some subset of ``score``,              |
+| l |     | au | ``multipass`` and ``interactive``, where ``score``    |
+| i |     | lt | indicates that the validator produces a score (this   |
+| d |     |    | is only valid for scoring problems), ``multipass``    |
+| a |     |    | indicates that the submission should run multiple     |
+| t |     |    | times with inputs generated by the validator, and     |
+| i |     |    | ``interactive`` specifies that the validator is run   |
+| o |     |    | interactively with a submission. For example,         |
+| n |     |    | ``cust                                                |
+|   |     |    | om interactive<span class="not-icpc"> score</span>``. |
++---+-----+----+-------------------------------------------------------+
+| k | Se  |    | List of keywords.                                     |
+| e | que |    |                                                       |
+| y | nce |    |                                                       |
+| w | of  |    |                                                       |
+| o | s   |    |                                                       |
+| r | tri |    |                                                       |
+| d | ngs |    |                                                       |
+| s |     |    |                                                       |
++---+-----+----+-------------------------------------------------------+
+| l | Str | a  | List of programming languages or the string ``all``.  |
+| a | ing | ll |                                                       |
+| n | or  |    |                                                       |
+| g | se  |    |                                                       |
+| u | que |    |                                                       |
+| a | nce |    |                                                       |
+| g | of  |    |                                                       |
+| e | s   |    |                                                       |
+| s | tri |    |                                                       |
+|   | ngs |    |                                                       |
++---+-----+----+-------------------------------------------------------+
 
-.. autoexception:: lumache.InvalidKindError
+License
+~~~~~~~
 
-For example:
+Allowed values for license.
 
->>> import lumache
->>> lumache.get_random_ingredients()
-['shells', 'gorgonzola', 'parsley']
+Values other than *unknown* or *public domain* requires rights_owner to
+have a value.
+
++-----+--------------------------------------+------------------------+
+| Va  | Comments                             | Link                   |
+| lue |                                      |                        |
++=====+======================================+========================+
+| u   | The default value. In practice means |                        |
+| nkn | that the problem can not be used.    |                        |
+| own |                                      |                        |
++-----+--------------------------------------+------------------------+
+| pub | There are no known copyrights on the | http://creativ         |
+| lic | problem, anywhere in the world.      | ecommons.org/about/pdm |
+| dom |                                      |                        |
+| ain |                                      |                        |
++-----+--------------------------------------+------------------------+
+| cc0 | CC0, “no rights reserved”            | http://creativ         |
+|     |                                      | ecommons.org/about/cc0 |
++-----+--------------------------------------+------------------------+
+| cc  | CC attribution                       | http://creativecommon  |
+| by  |                                      | s.org/licenses/by/4.0/ |
++-----+--------------------------------------+------------------------+
+| cc  | CC attribution, share alike          | ht                     |
+| by  |                                      | tp://creativecommons.o |
+| -sa |                                      | rg/licenses/by-sa/4.0/ |
++-----+--------------------------------------+------------------------+
+| ed  | May be freely used for educational   |                        |
+| uca | purposes                             |                        |
+| tio |                                      |                        |
+| nal |                                      |                        |
++-----+--------------------------------------+------------------------+
+| p   | Used with permission. The author     |                        |
+| erm | must be contacted for every          |                        |
+| iss | additional use.                      |                        |
+| ion |                                      |                        |
++-----+--------------------------------------+------------------------+
+
+Limits
+~~~~~~
+
+A map with the following keys:
+
++---------------+----------------------+-----------+------------------+
+| Key           | Comments             | Default   | Typical system   |
+|               |                      |           | default          |
++===============+======================+===========+==================+
+| tim           | optional             | see below |                  |
+| e_multipliers |                      |           |                  |
++---------------+----------------------+-----------+------------------+
+| time_limit    | optional float, in   | see below |                  |
+|               | seconds              |           |                  |
++---------------+----------------------+-----------+------------------+
+| ti            | optional float, in   | 1.0       |                  |
+| me_resolution | seconds              |           |                  |
++---------------+----------------------+-----------+------------------+
+| memory        | optional, in MiB     | system    | 2048             |
+|               |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| output        | optional, in MiB     | system    | 8                |
+|               |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| code          | optional, in kiB     | system    | 128              |
+|               |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| com           | optional, in seconds | system    | 60               |
+| pilation_time |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| compi         | optional, in MiB     | system    | 2048             |
+| lation_memory |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| va            | optional, in seconds | system    | 60               |
+| lidation_time |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| vali          | optional, in MiB     | system    | 2048             |
+| dation_memory |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+| vali          | optional, in MiB     | system    | 8                |
+| dation_output |                      | default   |                  |
++---------------+----------------------+-----------+------------------+
+
+For most keys the system default will be used if nothing is specified.
+This can vary, but you SHOULD assume that it’s reasonable. Only specify
+limits when the problem needs a specific limit, but do specify limits
+even if the “typical system default” is what is needed.
+
+Problem Timing
+^^^^^^^^^^^^^^
+
+``time_multipliers`` is a map with the following keys:
+
+================= ======== =======
+Key               Comments Default
+================= ======== =======
+ac_to_time_limit  float    2.0
+time_limit_to_tle float    1.5
+================= ======== =======
+
+The value of ``time_limit`` is an integer or floating-point problem time
+limit, in seconds. The time multipliers specify safety margins relative
+to the slowest accepted submission ``T_ac`` and fastest
+time_limit_exceeded submission ``T_tle``. The ``time_limit`` must
+satisfy ``T_ac * ac_to_time_limit <= time_limit`` and
+``time_limit * time_limit_to_tle <= T_tle``. In these calculations,
+``T_tle`` is treated as infinity if the problem does not provide at
+least one time_limit_exceeded submission.
+
+If no ``time_limit`` is provided, the default value is the smallest
+integer multiple of ``time_resolution`` that satisfies the above
+inequalities. It is an error if no such multiple exists. The
+``time_resolution`` key is ignored if the problem provides an explicit
+time limit (and in particular, the time limit is not required to be a
+multiple of the resolution). Since time multipliers are more
+future-proof than absolute time limits, avoid specifying ``time_limit``
+whenever practical.
+
+Contest systems should make a best effort to respect the problem time
+limit, and should warn when importing a problem whose time limit is
+specified with precision greater than can be resolved by system timers.
+
+.. container:: not-icpc
+
+   .. rubric:: Languages
+      :name: languages
+
+   A list of programming language codes from the table in the overview
+   section or ``all``.
+
+   If a list is given, the problem may only be solved using those
+   programming languages.
+
+Problem Statements
+------------------
+
+The problem statement of the problem is provided in the directory
+``problem_statement/``.
+
+This directory must contain one file per language, for at least one
+language, named ``problem.``\ <language>\ ``.``\ <filetype>, that
+contains the problem text itself, including input and output
+specifications, but not sample input and output. Language must be given
+as the shortest ISO 639 code. If needed a hyphen and a ISO 3166-1
+alpha-2 code may be appended to ISO 639 code. Optionally, the language
+code can be left out, the default is then English (``en``). Filetype can
+be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for
+PDF.
+
+Please note that many kinds of transformations on the problem
+statements, such as conversion to HTML or styling to fit in a single
+document containing many problems will not be possible for PDF problem
+statements, so using this format should be avoided if at all possible.
+
+Auxiliary files needed by the problem statement files must all be in
+``<short_name>/problem_statement/``. ``problem.<language>.<filetype>``
+should reference auxiliary files as if the working directory is
+``<short_name>/problem_statement/``. Image file formats supported are
+``.png``, ``.jpg``, ``.jpeg``, and ``.pdf``.
+
+A LaTeX file may include the Problem name using the LaTeX command
+``\problemname`` in case LaTeX formatting of the title is wanted. If
+it’s not included the problem name specified in ``problem.yaml`` will be
+used.
+
+The problem statements must only contain the actual problem statement,
+no sample data.
+
+Attachments
+-----------
+
+Public, i.e. non-secret, files to be made available in addition to the
+problem statement and sample test data are provided in the directory
+``attachments/``.
+
+Test data
+---------
+
+The test data are provided in subdirectories of ``data/``. The sample
+data in ``data/sample/`` and the secret data in ``data/secret/``.
+
+All input and answer files have the filename extension ``.in`` and
+``.ans`` respectively.
+
+Annotations
+~~~~~~~~~~~
+
+Optionally a hint, a description and an illustration file may be
+provided.
+
+The hint file is a text file with filename extension\ ``.hint`` giving a
+hint for solving an input file. The hint file is meant to be given as
+feedback, i.e. to somebody that fails to solve the problem.
+
+The description file is a text file with filename extension ``.desc``
+describing the purpose of an input file. The description file is meant
+to be privileged information that explains the purpose of the related
+test file, e.g. what cases it’s supposed to test.
+
+The Illustration is an image file with filename extension ``.png``,
+``.jpg``, ``.jpeg``, or ``.svg``. The illustration is meant to be
+privileged information illustrating the related test file.
+
+Input, answer, description, hint and image files are matched by the base
+name.
+
+Interactive Problems
+~~~~~~~~~~~~~~~~~~~~
+
+For interactive problems, any sample test cases must provide an
+interaction protocol with the extension ``.interaction`` for each sample
+demonstrating the communication between the submission and the output
+validator, meant to be displayed in the problem statement. An
+interaction protocol consists of a series of lines starting with ``>``
+and ``<``. Lines starting with ``>`` signify an output from the
+submission to the output validator, while ``<`` signify an input from
+the output validator to the submission.
+
+A sample test case may have just an ``.interaction`` file without a
+corresponding ``.in`` and ``.ans`` file. However, if either of a ``.in``
+or a ``.ans`` file is present the other one must also be present. Unlike
+``.in`` and ``.ans`` files for non-interactive problem, interactive
+``.in`` and ``.ans`` files must not be displayed to teams: not in the
+problem statement, nor as part of sample input download. If you want to
+provide files related to interactive problems (such as testing tools or
+input files) you can use `attachments <#attachments>`__.
+
+Test Data Groups
+~~~~~~~~~~~~~~~~
+
+.. container:: not-icpc
+
+   The test data for the problem can be organized into a tree-like
+   structure. Each node of this tree is represented by a directory and
+   referred to as a test data group. Each test data group may consist of
+   zero or more test cases (i.e., input-answer files) and zero or more
+   subgroups of test data (i.e., subdirectories).
+
+At the top level, the test data is divided into exactly two groups:
+``sample`` and ``secret``. These two groups may be further split into
+subgroups as desired.
+
+.. container:: not-icpc
+
+   The result of a test data group is computed by applying a grader to
+   all of the sub-results (test cases and subgroups) in the group. See
+   `Graders <#graders>`__ for more details.
+
+Test files and groups will be used in lexicographical order on file base
+name. If a specific order is desired a numbered prefix such as ``00``,
+``01``, ``02``, ``03``, and so on, can be used.
+
+.. container:: not-icpc
+
+   In each test data group, a file ``testdata.yaml`` may be placed to
+   specify how the result of the test data group should be computed. If
+   a test data group has no ``testdata.yaml`` file, the
+   ``testdata.yaml`` in the closest ancestor group that has one will be
+   used. If there is no ``testdata.yaml`` file in the root ``data``
+   group, one is implicitly added with the default values.
+
+   The format of ``testdata.yaml`` is as follows:
+
+   +---+----+---+----------------------------------------------------------+
+   | K | Ty | D | Comments                                                 |
+   | e | pe | e |                                                          |
+   | y |    | f |                                                          |
+   |   |    | a |                                                          |
+   |   |    | u |                                                          |
+   |   |    | l |                                                          |
+   |   |    | t |                                                          |
+   +===+====+===+==========================================================+
+   | g | M  | ` | Description of how the results of the group test cases   |
+   | r | ap | S | and subgroups should be aggregated.                      |
+   | a |    | e |                                                          |
+   | d |    | e |                                                          |
+   | i |    | G |                                                          |
+   | n |    | r |                                                          |
+   | g |    | a |                                                          |
+   |   |    | d |                                                          |
+   |   |    | i |                                                          |
+   |   |    | n |                                                          |
+   |   |    | g |                                                          |
+   |   |    |   |                                                          |
+   |   |    | < |                                                          |
+   |   |    | # |                                                          |
+   |   |    | g |                                                          |
+   |   |    | r |                                                          |
+   |   |    | a |                                                          |
+   |   |    | d |                                                          |
+   |   |    | i |                                                          |
+   |   |    | n |                                                          |
+   |   |    | g |                                                          |
+   |   |    | > |                                                          |
+   |   |    | ` |                                                          |
+   |   |    | _ |                                                          |
+   |   |    | _ |                                                          |
+   +---+----+---+----------------------------------------------------------+
+   | i | St | e | Arguments passed to each input validator for this test   |
+   | n | ri | m | data group. If a string then those are the flags that    |
+   | p | ng | p | will be passed to each input validator for this test     |
+   | u | or | t | data group. If a map then each key is the name of the    |
+   | t | m  | y | input validator and the value is the flags to pass to    |
+   | _ | ap | s | that input validator for this test data group.           |
+   | v | of | t | Validators not present in the map are run without flags. |
+   | a | s  | r |                                                          |
+   | l | tr | i |                                                          |
+   | i | in | n |                                                          |
+   | d | gs | g |                                                          |
+   | a | to |   |                                                          |
+   | t | s  |   |                                                          |
+   | o | tr |   |                                                          |
+   | r | in |   |                                                          |
+   | _ | gs |   |                                                          |
+   | f |    |   |                                                          |
+   | l |    |   |                                                          |
+   | a |    |   |                                                          |
+   | g |    |   |                                                          |
+   | s |    |   |                                                          |
+   +---+----+---+----------------------------------------------------------+
+   | o | St | e | Arguments passed to the output validator for this test   |
+   | u | ri | m | data group.                                              |
+   | t | ng | p |                                                          |
+   | p |    | t |                                                          |
+   | u |    | y |                                                          |
+   | t |    | s |                                                          |
+   | _ |    | t |                                                          |
+   | v |    | r |                                                          |
+   | a |    | i |                                                          |
+   | l |    | n |                                                          |
+   | i |    | g |                                                          |
+   | d |    |   |                                                          |
+   | a |    |   |                                                          |
+   | t |    |   |                                                          |
+   | o |    |   |                                                          |
+   | r |    |   |                                                          |
+   | _ |    |   |                                                          |
+   | f |    |   |                                                          |
+   | l |    |   |                                                          |
+   | a |    |   |                                                          |
+   | g |    |   |                                                          |
+   | s |    |   |                                                          |
+   +---+----+---+----------------------------------------------------------+
+
+Invalid Input Files
+~~~~~~~~~~~~~~~~~~~
+
+In the ``data/`` directory, there may be an ``invalid_inputs/``
+directory containing input files that must be rejected by at least one
+input validator. These are meant to only test the input validators, and
+are not used for judging. The rejected input files can be organized into
+a tree-like structure similar to the test data. There may be
+``testdata.yaml`` files within this structure, but they may only contain
+the key ``input_validator_flags``.
+
+.. container:: not-icpc
+
+   .. rubric:: Included Code
+      :name: included-code
+
+   Code that should be included with all submissions are provided in one
+   directory per supported language, called ``include/<language>/``.
+
+   The files should be copied from a language directory based on the
+   language of the submission, to the submission files before compiling,
+   overwriting files from the submission in the case of name collision.
+   Language must be given as one of the language codes in the language
+   table in the overview section. If any of the included files are
+   supposed to be the main file (i.e. a driver), that file must have the
+   language dependent name as given in the table referred above.
+
+Example Submissions
+-------------------
+
+Correct and incorrect solutions to the problem are provided in
+subdirectories of ``submissions/``. The possible subdirectories are:
+
++--------------+---------------------------------+---------------------+
+| Value        | Requirement                     | Comment             |
++==============+=================================+=====================+
+| accepted     | Accepted as a correct solution  | At least one is     |
+|              | for all test files              | required.           |
++--------------+---------------------------------+---------------------+
+| partia       | Overall verdict must be         | Must not be used    |
+| lly_accepted | Accepted. Overall score must be | for pass-fail       |
+|              | less than ``max_score``.        | problems.           |
++--------------+---------------------------------+---------------------+
+| wrong_answer | Wrong answer for some test      |                     |
+|              | file, but is not too slow and   |                     |
+|              | does not crash for any test     |                     |
+|              | file                            |                     |
++--------------+---------------------------------+---------------------+
+| time_li      | Too slow for some test file.    |                     |
+| mit_exceeded | May also give wrong answer but  |                     |
+|              | not crash for any test file.    |                     |
++--------------+---------------------------------+---------------------+
+| ru           | Crashes for some test file      |                     |
+| n_time_error |                                 |                     |
++--------------+---------------------------------+---------------------+
+
+Every file or directory in these directories represents a separate
+solution. Same requirements as for submissions with regards to
+filenames. It is mandatory to provide at least one accepted solution.
+
+Submissions must read input data from standard input, and write output
+to standard output.
+
+Input Validators
+----------------
+
+Input Validators, for verifying the correctness of the input files, are
+provided in ``input_validators/``. Input validators can be specified as
+VIVA-files (with file ending ``.viva``), Checktestdata-file (with file
+ending ``.ctd``), or as a program.
+
+All input validators provided will be run on every input file.
+Validation fails if any validator fails.
+
+Invocation
+~~~~~~~~~~
+
+An input validator program must be an application (executable or
+interpreted) capable of being invoked with a command line call.
+
+All input validators provided will be run on every test data file using
+the arguments specified for the test data group they are part of.
+Validation fails if any validator fails.
+
+When invoked the input validator will get the input file on stdin.
+
+The validator should be possible to use as follows on the command line:
+
+``./validator [arguments] < inputfile``
+
+Output
+~~~~~~
+
+The input validator may output debug information on stdout and stderr.
+This information may be displayed to the user upon invocation of the
+validator.
+
+Exit codes
+~~~~~~~~~~
+
+The input validator must exit with code 42 on successful validation. Any
+other exit code means that the input file could not be confirmed as
+valid.
+
+Dependencies
+^^^^^^^^^^^^
+
+The validator MUST NOT read any files outside those defined in the
+Invocation section. Its result MUST depend only on these files and the
+arguments.
+
+Output Validator
+----------------
+
+.. _overview-1:
+
+Overview
+~~~~~~~~
+
+An output validator is a program that is given the output of a submitted
+program, together with the corresponding input file, and a correct
+answer file for the input, and then decides whether the output provided
+is a correct output for the given input file.
+
+A validator program must be an application (executable or interpreted)
+capable of being invoked with a command line call. The details of this
+invocation are described below. The validator program has two ways of
+reporting back the results of validating:
+
+1. The validator must give a judgement (see `Reporting a
+   judgement <#reporting-a-judgement>`__).
+2. The validator may give additional feedback, e.g., an explanation of
+   the judgement to humans (see `Reporting Additional
+   Feedback <#reporting-additional-feedback>`__).
+
+A custom output validator is used if the problem requires more
+complicated output validation than what is provided by the default diff
+variant described below. It must be provided as the directory
+``output_validator/``, and may contain ``build`` and ``run`` scripts. It
+must adhere to the Output validator specification described below.
+
+The output validator provided will be run on the output for every test
+data file using the arguments specified for the test data group.
+
+Default Output Validator Specification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The default output validator is essentially a beefed-up diff. In its
+default mode, it tokenizes the files to compare and compares them token
+by token. It supports the following command-line arguments to control
+how tokens are compared.
+
++----------+-----------------------------------------------------------+
+| A        | Description                                               |
+| rguments |                                                           |
++==========+===========================================================+
+| ``       | indicates that comparisons should be case-sensitive.      |
+| case_sen |                                                           |
+| sitive`` |                                                           |
++----------+-----------------------------------------------------------+
+| ``       | indicates that changes in the amount of whitespace should |
+| space_ch | be rejected (the default is that any sequence of 1 or     |
+| ange_sen | more whitespace characters are equivalent).               |
+| sitive`` |                                                           |
++----------+-----------------------------------------------------------+
+| ``floa   | indicates that floating-point tokens should be accepted   |
+| t_relati | if they are within relative error ≤ ε (see below for      |
+| ve_toler | details).                                                 |
+| ance ε`` |                                                           |
++----------+-----------------------------------------------------------+
+| ``floa   | indicates that floating-point tokens should be accepted   |
+| t_absolu | if they are within absolute error ≤ ε (see below for      |
+| te_toler | details).                                                 |
+| ance ε`` |                                                           |
++----------+-----------------------------------------------------------+
+| ``flo    | short-hand for applying ε as both relative and absolute   |
+| at_toler | tolerance.                                                |
+| ance ε`` |                                                           |
++----------+-----------------------------------------------------------+
+
+When supplying both a relative and an absolute tolerance, the semantics
+are that a token is accepted if it is within either of the two
+tolerances. When a floating-point tolerance has been set, any valid
+formatting of floating point numbers is accepted for floating point
+tokens. So for instance if a token in the answer file says ``0.0314``, a
+token of ``3.14000000e-2`` in the output file would be accepted. If no
+floating point tolerance has been set, floating point tokens are treated
+just like any other token and has to match exactly.
+
+.. _invocation-1:
+
+Invocation
+~~~~~~~~~~
+
+When invoked the output validator will be passed at least three command
+line parameters and the output stream to validate on stdin.
+
+The validator should be possible to use as follows on the command line:
+
+.. code:: sh
+
+   ./validator input judge_answer feedback_dir [additional_arguments] < team_output [ > team_input ]
+
+The meaning of the parameters listed above are:
+
+-  input: a string specifying the name of the input data file which was
+   used to test the program whose results are being validated.
+
+-  judge_answer: a string specifying the name of an arbitrary “answer
+   file” which acts as input to the validator program. The answer file
+   may, but is not necessarily required to, contain the “correct answer”
+   for the problem. For example, it might contain the output which was
+   produced by a judge’s solution for the problem when run with input
+   file as input. Alternatively, the “answer file” might contain
+   information, in arbitrary format, which instructs the validator in
+   some way about how to accomplish its task. The meaning of the
+   contents of the answer file is not defined by this format.
+
+-  feedback_dir: a string which specifies the name of a “feedback
+   directory” in which the validator can produce “feedback files” in
+   order to report additional information on the validation of the
+   output file. The feedbackdir must end with a path separator
+   (typically ‘/’ or ‘\\’ depending on operating system), so that simply
+   appending a filename to feedbackdir gives the path to a file in the
+   feedback directory.
+
+-  additional_arguments: in case the problem specifies additional
+   validator_flags, these are passed as additional arguments to the
+   validator on the command line.
+
+-  team_output: the output produced by the program being validated is
+   given on the validator’s standard input pipe.
+
+-  team_input: when running the validator in interactive mode everything
+   written on the validator’s standard output pipe is given to the
+   program being validated. Please note that when running interactive
+   the program will only receive the output produced by the validator
+   and will not have direct access to the input file.
+
+The two files pointed to by input and judge_answer must exist (though
+they are allowed to be empty) and the validator program must be allowed
+to open them for reading. The directory pointed to by feedback_dir must
+also exist.
+
+Reporting a judgement
+~~~~~~~~~~~~~~~~~~~~~
+
+A validator program is required to report its judgement by exiting with
+specific exit codes:
+
+-  If the output is a correct output for the input file (i.e., the
+   submission that produced the output is to be Accepted), the validator
+   exits with exit code 42.
+-  If the output is incorrect (i.e., the submission that produced the
+   output is to be judged as Wrong Answer), the validator exits with
+   exit code 43.
+
+Any other exit code (including 0!) indicates that the validator did not
+operate properly, and the judging system invoking the validator must
+take measures to report this to contest personnel. The purpose of these
+somewhat exotic exit codes is to avoid conflict with other exit codes
+that results when the validator crashes. For instance, if the validator
+is written in Java, any unhandled exception results in the program
+crashing with an exit code of 1, making it unsuitable to assign a
+judgement meaning to this exit code.
+
+Reporting Additional Feedback
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The purpose of the feedback directory is to allow the validator program
+to report more information to the judging system than just the
+accept/reject verdict. Using the feedback directory is optional for a
+validator program, so if one just wants to write a bare-bones minimal
+validator, it can be ignored.
+
+The validator is free to create different files in the feedback
+directory, in order to provide different kinds of information to the
+judging system, in a simple but organized way. For instance, there may
+be a “judgemessage.txt” file, the contents of which gives a message that
+is presented to a judge reviewing the current submission (typically used
+to help the judge verify why the submission was judged as incorrect, by
+specifying exactly what was wrong with its output). Other examples of
+files that may be useful in some contexts (though not in the ICPC) are a
+score.txt file, giving the submission a score based on other factors
+than correctness, or a teammessage.txt file, giving a message to the
+team that submitted the solution, providing additional feedback on the
+submission.
+
+A judging system that implements this format must support the
+judgemessage.txt file described above (I.e., content of the
+“judgemessage.txt” file, if produced by the validator, must be provided
+by the judging system to a human judge examining the submission). Having
+the judging system support other files is optional.
+
+Note that a validator may choose to ignore the feedback directory
+entirely. In particular, the judging system must not assume that the
+validator program creates any files there at all.
+
+.. container:: not-icpc
+
+   .. rubric:: Multi-pass validation
+      :name: multi-pass-validation
+
+   A multi-pass validator can be used for problems that should run the
+   submission multiple times sequentially, using a new input generated
+   by output validator during the previous invocation of the submission.
+
+   To signal that the submission should be run again, the output
+   validator must exit with code 42 and output the new input in the file
+   ``nextpass.in`` in the feedback directory. Judging stops if no
+   ``nextpass.in`` was created, or the output validator exited with any
+   other code.
+
+   It is a judge error to create the ``nextpass.in`` file and exit with
+   any other code than 42.
+
+Examples
+^^^^^^^^
+
+An example of a judgemessage.txt file:
+
+.. code:: text
+
+   Team failed at test case 14.
+   Team output: "31", Judge answer: "30".
+   Team failed at test case 18.
+   Team output: "hovercraft", Judge answer: "7".
+   Summary: 2 test cases failed.
+
+An example of a teammessage.txt file:
+
+.. code:: text
+
+   Almost all test cases failed, are you even trying to solve the problem?
+
+Validator standard output and standard error
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A validator program is allowed to write any kind of debug information to
+its standard error pipe. This information may be displayed to the user
+upon invocation of the validator.
+
+Grading
+-------
+
+For pass-fail problems, the verdict of a submission is the first
+non-accepted verdict, where test cases are run in lexicographical order
+of their full file paths (note that ``sample`` comes before ``secret``
+in this order).
+
+.. container:: not-icpc
+
+   For scoring problems, the behaviour is configured by the following
+   flags under ``grading`` in ``testdata.yaml``:
+
+   +---+---------+---------------------------------------------------------+
+   | K | Type    | Description                                             |
+   | e |         |                                                         |
+   | y |         |                                                         |
+   +===+=========+=========================================================+
+   | s | String  | The score assigned to an accepted input file in the     |
+   | c |         | group. If a scoring output validator is used, this      |
+   | o |         | score is **multiplied** by the score from the           |
+   | r |         | validator.                                              |
+   | e |         |                                                         |
+   +---+---------+---------------------------------------------------------+
+   | m | String  | A number specifying the maximum score allowed for this  |
+   | a |         | test group. It is an error to exceed this.              |
+   | x |         |                                                         |
+   | _ |         |                                                         |
+   | s |         |                                                         |
+   | c |         |                                                         |
+   | o |         |                                                         |
+   | r |         |                                                         |
+   | e |         |                                                         |
+   +---+---------+---------------------------------------------------------+
+   | a | ``sum`` | If sum, the score is the sum of the subresult scores.   |
+   | g | or      | If min, the score is the minimum of the subresult       |
+   | g | ``min`` | scores.                                                 |
+   | r |         |                                                         |
+   | e |         |                                                         |
+   | g |         |                                                         |
+   | a |         |                                                         |
+   | t |         |                                                         |
+   | i |         |                                                         |
+   | o |         |                                                         |
+   | n |         |                                                         |
+   +---+---------+---------------------------------------------------------+
+   | v | ``      | If ``first_error``, the verdict is that of the first    |
+   | e | first_e | non-accepted subresult. If ``accept_if_any_accepted``,  |
+   | r | rror``, | the verdict is accepted if any subresult is accepted,   |
+   | d | ``acc   | otherwise that of the first non-accepted subresult.     |
+   | i | ept_if_ |                                                         |
+   | c | any_acc |                                                         |
+   | t | epted`` |                                                         |
+   +---+---------+---------------------------------------------------------+
+
+   The defaults are as follows:
+
+   -  The *data* and *secret* group: ``score`` is 1, ``scoring`` is sum,
+      ``verdict`` is ``accept_if_any_accepted``.
+   -  The *sample* group: ``score`` is 0, ``scoring`` is ``min``,
+      ``verdict`` is ``first_error``.
+   -  Other groups: score is ``1``, ``scoring`` is ``min``, verdict is
+      ``first_error``.
+   -  ``max_score`` is the sum of the ``max_score`` of the subresults if
+      ``scoring`` is sum, and the minimum of the ``max_score`` of the
+      subresults of ``scoring`` is ``min``. For individual testcases,
+      the ``max_score`` here means the ``score`` value of the group it
+      is in.
+
+   If ``verdict`` is ``first_error``, only test cases in the group up to
+   the first non-accepted case are judged. If ``verdict`` is
+   ``accept_if_any_accepted``, all test cases in the group are judged.
 
