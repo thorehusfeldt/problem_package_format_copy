@@ -18,6 +18,7 @@ Contents
 
 .. toctree::
 
-   core
-   advanced
-   scoring
+    format
+    core
+    advanced
+    scoring
