@@ -141,11 +141,42 @@ The keys are defined as below. Keys are optional unless explicitly
 stated. Any unknown keys should be treated as an error.
 
 .. object:: name
-    :type: string or map
-    :required: True
+
+    **Required**
+
+    **Type:** string or map
+
+    When `name` is a map, it maps language codes to strings.
+
+    .. example:: yaml
+        name: Hello World
+
+    .. example:: yaml
+        name: 
+	  en: Hello World!
+	  fr: Bonjour Le Monde!
+	  de: Hallo Welt
+
+.. object:: version
+
+    **Type:** string
+
+    When `name` is a map, it maps language codes to strings.  If using this
+    version of the Format must be  the string ``2023-07-draft``. Will be on the
+    form     ``<yyyy>-<mm>`` for a stable version,
+    ``<yyyy>-<mm>-draft`` or ``draft`` for a draft        version, or
+    ``legacy`` for the version before the     addition of
+    problem_format_version. Documentation for version ``<version>`` is
+    available at                 https://www.kattis.com
+    /problem-package-format/spec/problem_package_format/. 
+
+    .. example:: yaml
+        version: 2023-07
+
+    .. example:: yaml
+        version: legacy
 
 
-   foo bar
 
 +---+-----+----+-------------------------------------------------------+
 | K | T   | D  | Comments                                              |
@@ -153,37 +184,6 @@ stated. Any unknown keys should be treated as an error.
 | y |     | au |                                                       |
 |   |     | lt |                                                       |
 +===+=====+====+=======================================================+
-| p | Str | `` | Version of the Problem Package Format used for this   |
-| r | ing | le | package. If using this version of the Format must be  |
-| o |     | ga | the string ``2023-07-draft``. Will be on the form     |
-| b |     | cy | ``<yyyy>-<mm>`` for a stable version,                 |
-| l |     | `` | ``<yyyy>-<mm>-draft`` or ``draft`` for a draft        |
-| e |     |    | version, or ``legacy`` for the version before the     |
-| m |     |    | addition of problem_format_version. Documentation for |
-| _ |     |    | version ``<version>`` is available at                 |
-| f |     |    | https://www.kattis.com                                |
-| o |     |    | /problem-package-format/spec/problem_package_format/. |
-| r |     |    |                                                       |
-| m |     |    |                                                       |
-| a |     |    |                                                       |
-| t |     |    |                                                       |
-| _ |     |    |                                                       |
-| v |     |    |                                                       |
-| e |     |    |                                                       |
-| r |     |    |                                                       |
-| s |     |    |                                                       |
-| i |     |    |                                                       |
-| o |     |    |                                                       |
-| n |     |    |                                                       |
-+---+-----+----+-------------------------------------------------------+
-| n | Str |    | Required. If a string this is the name of the problem |
-| a | ing |    | in English. If a map the keys are language codes and  |
-| m | or  |    | the values are the name of the problem in that        |
-| e | map |    | language. It is an error for a language to be missing |
-|   | of  |    | if there exists a problem statement for that          |
-|   | s   |    | language.                                             |
-|   | tri |    |                                                       |
-|   | ngs |    |                                                       |
 +---+-----+----+-------------------------------------------------------+
 | u | Str |    | UUID identifying the problem.                         |
 | u | ing |    |                                                       |
