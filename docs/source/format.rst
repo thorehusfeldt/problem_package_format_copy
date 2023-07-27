@@ -170,11 +170,37 @@ stated. Any unknown keys should be treated as an error.
     available at                 https://www.kattis.com
     /problem-package-format/spec/problem_package_format/. 
 
-    .. example:: yaml
+    .. code-block:: yaml
         version: 2023-07
 
-    .. example:: yaml
+    .. code-block:: yaml
         version: legacy
+
+.. object:: type
+
+    **Type:** string
+
+    In ICPC, `"pass-fail"`
+    In general, `"pass-fail"` or `"scoring"`
+
+.. object:: author
+.. object:: source
+.. object:: rights_owner
+
+    **Type:** string
+
+    Who should get author credits. This would typically   
+    be the people that came up with the idea, wrote the   
+    problem specification and created the test data. This 
+    is sometimes omitted when authors choose to instead   
+    only give source credit, but both may be specified.   
+
+    .. code-block:: yaml
+
+        author: Alice McAuthorson and Bob Write
+        source: Lunar CPC Finals 1969
+        rights_owner: Miscatonic University
+
 
 
 
@@ -196,11 +222,7 @@ stated. Any unknown keys should be treated as an error.
 | e |     | fa |                                                       |
 |   |     | il |                                                       |
 +---+-----+----+-------------------------------------------------------+
-| a | Str |    | Who should get author credits. This would typically   |
-| u | ing |    | be the people that came up with the idea, wrote the   |
-| t |     |    | problem specification and created the test data. This |
-| h |     |    | is sometimes omitted when authors choose to instead   |
-| o |     |    | only give source credit, but both may be specified.   |
+
 | r |     |    |                                                       |
 +---+-----+----+-------------------------------------------------------+
 | s | Str |    | Who should get source credit. This would typically be |
