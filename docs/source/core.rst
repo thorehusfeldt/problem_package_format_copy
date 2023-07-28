@@ -271,7 +271,8 @@ Default Output Validation
 
 To validate a submission, an output validator checks the ouput of the submission on the secret test data.
 By default, this process just compares the ``.ans``-file of every test case with the submission's output on the corresponding ``.in``-file.
-The default output validator is lenient with respect to whitespace, character case, and integer representation, so ``034   Alice``  and ``34 alice`` are the same, but ``34.0 alice`` and ``34 alic`` are both different.
+The default output validator is lenient with respect to whitespace, and character case, so
+``34 alice`` is the same as `` 34     AlicE``, but different from ``34.0 alice``, ``034 alice`` and ``34 alicee``.
 For more details, or if you need different behaviour from the default output validator, see :ref:`Modfifying the Default Output Validator`.
 For problems with more than one correct answer, you need to write your own validator; see :ref:`Custom Output Validation`.
 
