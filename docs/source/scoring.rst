@@ -1,5 +1,6 @@
+****************
 Scoring Problems
-================
+****************
 
 Nothing of this is part of the ICPC specification.
 
@@ -105,7 +106,8 @@ For scoring problems, the behaviour is configured by the following flags under `
 
 The defaults are chosen so that that problems with scoring subtasks can be organised as follows:
 
-.. code-block:: txt
+.. code-block:: text
+
     data
       +-sample
       +-secret

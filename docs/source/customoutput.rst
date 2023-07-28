@@ -1,5 +1,6 @@
-Advanced Topics: Custom Output Validation
-=========================================
+************************
+Custom Output Validation
+************************
 
 Custum Output Validation
 ------------------------

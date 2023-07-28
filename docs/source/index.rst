@@ -1,5 +1,6 @@
+************************************
 Problem Package Format Documentation
-====================================
+************************************
 
 
 .. note::
@@ -13,5 +14,6 @@ Contents
 
     format
     core
-    advanced
+    customoutput
     scoring
+    appendix

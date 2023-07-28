@@ -1,14 +1,14 @@
-Core Format for Pass–Fail Problems
-==================================
+***************************
+Core Problem Package Format
+***************************
 
-There are two types of problems: pass-fail problems and scoring
-problems. In pass-fail problems, submissions are basically judged as
+In pass-fail problems, submissions are basically judged as
 either accepted or rejected (though the “rejected” judgement is more
 fine-grained and divided into results such as “Wrong Answer”, “Time
 Limit Exceeded”, etc).
 
-Problem Metadata
-----------------
+Problem Settings
+================
 
 Metadata about the problem (e.g., source, license, limits) are provided
 in a UTF-8 encoded YAML file named ``problem.yaml`` placed in the root
@@ -312,8 +312,8 @@ It is an error if no such multiple exists.
     specified with precision greater than can be resolved by system timers.
 
 
-Problem Statements
-------------------
+Problem Statement
+=================
 
 The problem statement of the problem is provided in the directory
 ``problem_statement/``.
@@ -354,8 +354,8 @@ Public, i.e. non-secret, files to be made available in addition to the
 problem statement and sample test data are provided in the directory
 ``attachments/``.
 
-Test data
----------
+Test Data
+=========
 
 The test data are provided in subdirectories of ``data/``. 
 The sample data in ``data/sample/`` and the secret data in ``data/secret/``.
@@ -439,7 +439,7 @@ the key ``input_validator_flags``.
    language dependent name as given in the table referred above.
 
 Example Submissions
--------------------
+===================
 
 Correct and incorrect solutions to the problem are provided in
 subdirectories of ``submissions/``. The possible subdirectories are:
@@ -522,8 +522,12 @@ The validator MUST NOT read any files outside those defined in the
 Invocation section. Its result MUST depend only on these files and the
 arguments.
 
-Output Validator
-----------------
+
+How Judging is Done
+===================
+
+Output Validation
+-----------------
 
 An output validator is a program that is given the output of a submitted
 program, together with the corresponding input file, and a correct
@@ -566,12 +570,10 @@ If no floating point tolerance has been set, floating point tokens are treated
 just like any other token and have to match exactly.
 
 
-Grading
--------
+Judgement
+---------
 
 For pass-fail problems, the verdict of a submission is the first
 non-accepted verdict, where test cases are run in lexicographical order
 of their full file paths (note that ``sample`` comes before ``secret``
 in this order).
-
-
