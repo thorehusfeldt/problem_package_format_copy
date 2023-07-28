@@ -11,9 +11,11 @@ Contents
 --------
 
 .. toctree::
+    :maxdepth: 2
 
     format
     core
+    settings
     customoutput
     scoring
     appendix
