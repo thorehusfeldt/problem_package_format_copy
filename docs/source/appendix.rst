@@ -91,6 +91,7 @@ Glossary
 ========
 
 .. glossary::
+
     verdict
         one of the strings 'AC', 'WA', 'TLE', 'RTE', or 'JE'
     
@@ -106,29 +107,50 @@ Glossary
     gradeable
         A testcase or a testroup, i.e., something that can have a grade.
     
-    testdata
-        A simple directed acyclic graph whose leaves are testcases.
-        The testdata without the leaves form a rooted tree.
+    test data
     
-    testcase
-        A leaf in the testdata.
+        A simple directed acyclic graph whose leaves are test cases.
+        The test data without the leaves form a rooted tree.
+    
+    test case
+
+	An instance to the problem.
         The predecessors of a testcase are testgroups, but not the root.
     
-    testgroup
-        An non-leaf node in the testdata. The testgroups form a rooted
-        tree. The root has one or two children, which are called 'sample'
-        and 'secret'. The names of all other testgroups, if they exist,
-        describe their position in the testdata tree, such as 'secret/group1'
-        or 'secret/connected/cycles'.
+    test group
 
-    team
-        Person or group of persons trying to solve the problem
+        An non-leaf node in the test data. The test groups form a rooted
+        tree. The root has one or two children, which are called ``sample``
+        and ``secret``. The names of all other test groups, if they exist,
+        describe their position in the testdata tree, such as ``secret/group1``
+        or ``secret/connected/cycles``.
 
-    team submission
-        A program submitted by the team to the judge
+    solver
+
+        Person or group of persons trying to solve the problem. Synonym: team
+
+    submission
+
+        A program submitted by a solver to the judge, 
+	or an example submission, which is part of the problem package.
 
     task
+
         Synonym for problem 
 
     judge
+    
         Synonym for contest system or judging environment
+
+    problem ID
+
+        The unique, short name of the problem used for the problem's directory,
+       	sometimes referred to as its ``<problem_id>``. 
+	For instance, the problem ID of the problem whose English name is *Hello World!* is ``hello``.
+	The problem ID matches ``[a-z0-9]+``.
+
+    problem name
+
+        The name of a problem in a natural language, such as *Hello World!*.
+	All problems need at least one name;
+       	most problems have an English name.

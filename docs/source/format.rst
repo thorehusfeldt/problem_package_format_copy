@@ -15,11 +15,10 @@ contests as well as educational use.
 Directory structure
 --------------------
 
-The package consists of a single directory whose name ``<problemid>`` identifies the problem.
+The package consists of a single directory whose name is the problem's unique :term:`problem ID`, such as ``hello``.
 Its subdirectories and some of the files have fixed names.
-
-A minimal problem has the following structure.
 There may be more directories, and in particular more subdirectories.
+A minimal problem has the following structure:
 
 ::
 
@@ -58,8 +57,8 @@ With this setup, the :term:`judge` runs a  :term:`team submission` against the t
 File Name Requirements
 ----------------------
 
-The name of the directory must consist solely of lower case
-letters a-z and digits 0-9. Alternatively it can be a ZIP compressed
+The problem ID of the directory must consist solely of lower case letters a-z and digits 0-9. 
+Alternatively it can be a ZIP compressed
 archive of such a directory with identical base name and extension
 ``.kpp`` or ``.zip``.
 

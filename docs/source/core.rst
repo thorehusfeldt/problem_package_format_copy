@@ -2,10 +2,272 @@
 Core Problem Package Format
 ***************************
 
+
+Problem Statement
+=================
+
+The problem statement of the problem is provided in the directory
+``problem_statement/``.
+
+This directory must contain one file per language, for at least one
+language, named ``problem.``\ <language>\ ``.``\ <filetype>, that
+contains the problem text itself, including input and output
+specifications, but not sample input and output. Language must be given
+as the shortest ISO 639 code. If needed a hyphen and a ISO 3166-1
+alpha-2 code may be appended to ISO 639 code. Optionally, the language
+code can be left out, the default is then English (``en``). Filetype can
+be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for
+PDF.
+
+.. note ::
+    Many kinds of transformations on the problem
+    statements, such as conversion to HTML or styling to fit in a single
+    document containing many problems will not be possible for PDF problem
+    statements, so using PDF should be avoided if at all possible.
+
+Auxiliary files needed by the problem statement files must all be in
+``<problem_id>/problem_statement/``. 
+The statement source ``problem.<language>.<filetype>``
+should reference auxiliary files as if the working directory is
+``<problem_id>/problem_statement/``. 
+Image file formats supported are ``.png``, ``.jpg``, ``.jpeg``, and ``.pdf``.
+
+A LaTeX file may include the Problem name using the LaTeX command
+``\problemname`` in case LaTeX formatting of the title is wanted.
+If it’s not included the problem name specified in ``problem.yaml`` will be used.
+
+The problem statements must only contain the actual problem statement, no sample data.
+
+Attachments
+-----------
+
+Public, i.e. non-secret, files to be made available in addition to the
+problem statement and sample test data are provided in the directory
+``attachments/``.
+
+Test Data
+=========
+
+The test data are provided in subdirectories of ``data/``. 
+The sample data in ``data/sample/`` and the secret data in ``data/secret/``.
+
+An :term:`test case` has a unique :term:`base name` such as ``data/secret/043-no-edges`` and is determined by its input file, such as ``data/secret/043-no-edges.in``.
+Most test cases have a default answer file with the extension ``.ans``.
+Several other files with the same base name and other extensions than ``.in`` may exist;
+
+Input ``.in``:
+
+    *Required*. Explain me.
+
+Default answer ``.ans``:
+
+    Must exist for problems that use the default output validator.
+    See :ref:`Custom Output Validation`.
+
+Hint ``.hint``:
+
+    The hint file is a text file with filename extension\ ``.hint`` giving a
+    hint for solving an input file. The hint file is meant to be given as
+    feedback, i.e. to somebody that fails to solve the problem.
+
+Description ``.desc``:    
+
+    The description file is a text file with filename extension ``.desc`` describing the purpose of an input file. 
+    The description file is meant to be privileged information that explains the purpose of the related
+    test file, e.g., what cases it’s supposed to test.
+    
+Illustration:    
+
+    The Illustration is an image file with filename extension ``.png``, ``.jpg``, ``.jpeg``, or ``.svg``. 
+    The illustration is meant to be privileged information illustrating the related test file.
+
+.. container:: not-icpc
+
+   The test data for the problem can be organized into a tree-like
+   structure. Each node of this tree is represented by a directory and
+   referred to as a test data group. Each test data group may consist of
+   zero or more test cases (i.e., input-answer files) and zero or more
+   subgroups of test data (i.e., subdirectories).
+
+At the top level, the test data is divided into exactly two groups:
+``sample`` and ``secret``. These two groups may be further split into
+subgroups as desired.
+
+Test files and groups will be used in lexicographical order on file base name. 
+If a specific order is desired a numbered prefix such as ``00``, ``01``, ``02``, ``03``, and so on, can be used.
+
+
+Invalid Input Files
+-------------------
+
+In the ``data/`` directory, there may be an ``invalid_inputs/``
+directory containing input files that must be rejected by at least one
+input validator. These are meant to only test the input validators, and
+are not used for judging. The rejected input files can be organized into
+a tree-like structure similar to the test data. There may be
+``testdata.yaml`` files within this structure, but they may only contain
+the key ``input_validator_flags``.
+
+.. container:: not-icpc
+
+   .. rubric:: Included Code
+      :name: included-code
+
+   Code that should be included with all submissions are provided in one
+   directory per supported language, called ``include/<language>/``.
+
+   The files should be copied from a language directory based on the
+   language of the submission, to the submission files before compiling,
+   overwriting files from the submission in the case of name collision.
+   Language must be given as one of the language codes in the language
+   table in the overview section. If any of the included files are
+   supposed to be the main file (i.e. a driver), that file must have the
+   language dependent name as given in the table referred above.
+
+Example Submissions
+===================
+
+Correct and incorrect solutions to the problem are provided in
+subdirectories of ``submissions/``. The possible subdirectories are:
+
++--------------+---------------------------------+---------------------+
+| Value        | Requirement                     | Comment             |
++==============+=================================+=====================+
+| accepted     | Accepted as a correct solution  | At least one is     |
+|              | for all test files              | required.           |
++--------------+---------------------------------+---------------------+
+| partia       | Overall verdict must be         | Must not be used    |
+| lly_accepted | Accepted. Overall score must be | for pass-fail       |
+|              | less than ``max_score``.        | problems.           |
++--------------+---------------------------------+---------------------+
+| wrong_answer | Wrong answer for some test      |                     |
+|              | file, but is not too slow and   |                     |
+|              | does not crash for any test     |                     |
+|              | file                            |                     |
++--------------+---------------------------------+---------------------+
+| time_li      | Too slow for some test file.    |                     |
+| mit_exceeded | May also give wrong answer but  |                     |
+|              | not crash for any test file.    |                     |
++--------------+---------------------------------+---------------------+
+| ru           | Crashes for some test file      |                     |
+| n_time_error |                                 |                     |
++--------------+---------------------------------+---------------------+
+
+Every file or directory in these directories represents a separate
+solution. Same requirements as for submissions with regards to
+filenames. It is mandatory to provide at least one accepted solution.
+
+Submissions must read input data from standard input, and write output
+to standard output.
+
+Input Validation
+================
+
+Input Validators, for verifying the correctness of the input files, are
+provided in ``input_validators/``. Input validators can be specified as
+VIVA-files (with file ending ``.viva``), Checktestdata-file (with file
+ending ``.ctd``), or as a program.
+
+All input validators provided will be run on every input file.
+Validation fails if any validator fails.
+
+Input Validator Invocation
+--------------------------
+
+An input validator program must be an application (executable or
+interpreted) capable of being invoked with a command line call.
+
+All input validators provided will be run on every test data file using
+the arguments specified for the test data group they are part of.
+Validation fails if any validator fails.
+
+When invoked the input validator will get the input file on stdin.
+
+The validator should be possible to use as follows on the command line:
+
+``./validator [arguments] < inputfile``
+
+Output
+~~~~~~
+
+The input validator may output debug information on stdout and stderr.
+This information may be displayed to the user upon invocation of the
+validator.
+
+Exit codes
+~~~~~~~~~~
+
+The input validator must exit with code 42 on successful validation. Any
+other exit code means that the input file could not be confirmed as
+valid.
+
+Dependencies
+^^^^^^^^^^^^
+
+The validator MUST NOT read any files outside those defined in the
+Invocation section. Its result MUST depend only on these files and the
+arguments.
+
+
+How Judging is Done
+===================
+
 In pass-fail problems, submissions are basically judged as
 either accepted or rejected (though the “rejected” judgement is more
 fine-grained and divided into results such as “Wrong Answer”, “Time
 Limit Exceeded”, etc).
+
+Output Validation
+-----------------
+
+An output validator is a program that is given the output of a submitted
+program, together with the corresponding input file, and a correct
+answer file for the input, and then decides whether the output provided
+is a correct output for the given input file.
+
+The output validator provided will be run on the output for every test
+data file using the arguments specified for the test data group.
+
+Default Output Validator Specification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The default output validator is essentially a beefed-up diff. 
+In its default mode, it tokenizes the files to compare and compares them token by token. 
+It supports the following command-line arguments to control how tokens are compared.
+
+``case_sensitive``:
+    String comparisons should be case-sensitive. By defaul they are not.
+``space_change_sensitive``:
+    Changes in the amount of whitespace should
+    be rejected (the default is that any sequence of one or
+    more whitespace characters are equivalent).
+``float_relative_tolerance`` ε:
+    Floating-point tokens should be accepted
+    if they are within relative error ≤ ε (see below for details).                                             
+``float_absolute_tolerance`` ε:
+    indicates that floating-point tokens should be accepted
+    if they are within absolute error ≤ ε (see below for    
+    details).                                                 
+``float_tolerance`` ε:
+    short-hand for applying ε as both relative and absolute tolerance.
+
+When supplying both a relative and an absolute tolerance, the semantics
+are that a token is accepted if it is within either of the two
+tolerances. When a floating-point tolerance has been set, any valid
+formatting of floating point numbers is accepted for floating point
+tokens. For instance, if a token in the answer file says ``0.0314``, a
+token of ``3.14000000e-2`` in the output file would be accepted.
+If no floating point tolerance has been set, floating point tokens are treated
+just like any other token and have to match exactly.
+
+
+Judgement
+---------
+
+For pass-fail problems, the verdict of a submission is the first
+non-accepted verdict, where test cases are run in lexicographical order
+of their full file paths (note that ``sample`` comes before ``secret``
+in this order).
 
 Problem Settings
 ================
@@ -311,269 +573,3 @@ It is an error if no such multiple exists.
     limit, and should warn when importing a problem whose time limit is
     specified with precision greater than can be resolved by system timers.
 
-
-Problem Statement
-=================
-
-The problem statement of the problem is provided in the directory
-``problem_statement/``.
-
-This directory must contain one file per language, for at least one
-language, named ``problem.``\ <language>\ ``.``\ <filetype>, that
-contains the problem text itself, including input and output
-specifications, but not sample input and output. Language must be given
-as the shortest ISO 639 code. If needed a hyphen and a ISO 3166-1
-alpha-2 code may be appended to ISO 639 code. Optionally, the language
-code can be left out, the default is then English (``en``). Filetype can
-be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for
-PDF.
-
-Please note that many kinds of transformations on the problem
-statements, such as conversion to HTML or styling to fit in a single
-document containing many problems will not be possible for PDF problem
-statements, so using this format should be avoided if at all possible.
-
-Auxiliary files needed by the problem statement files must all be in
-``<short_name>/problem_statement/``. ``problem.<language>.<filetype>``
-should reference auxiliary files as if the working directory is
-``<short_name>/problem_statement/``. Image file formats supported are
-``.png``, ``.jpg``, ``.jpeg``, and ``.pdf``.
-
-A LaTeX file may include the Problem name using the LaTeX command
-``\problemname`` in case LaTeX formatting of the title is wanted. If
-it’s not included the problem name specified in ``problem.yaml`` will be
-used.
-
-The problem statements must only contain the actual problem statement,
-no sample data.
-
-Attachments
------------
-
-Public, i.e. non-secret, files to be made available in addition to the
-problem statement and sample test data are provided in the directory
-``attachments/``.
-
-Test Data
-=========
-
-The test data are provided in subdirectories of ``data/``. 
-The sample data in ``data/sample/`` and the secret data in ``data/secret/``.
-
-Input and answer files have the filename extension ``.in`` and ``.ans`` respectively.
-
-Annotations
-~~~~~~~~~~~
-
-Optionally a hint, a description and an illustration file may be
-provided.
-
-The hint file is a text file with filename extension\ ``.hint`` giving a
-hint for solving an input file. The hint file is meant to be given as
-feedback, i.e. to somebody that fails to solve the problem.
-
-The description file is a text file with filename extension ``.desc``
-describing the purpose of an input file. The description file is meant
-to be privileged information that explains the purpose of the related
-test file, e.g. what cases it’s supposed to test.
-
-The Illustration is an image file with filename extension ``.png``,
-``.jpg``, ``.jpeg``, or ``.svg``. The illustration is meant to be
-privileged information illustrating the related test file.
-
-Input, answer, description, hint and image files are matched by the base
-name.
-
-
-Test Data Groups
-~~~~~~~~~~~~~~~~
-
-.. container:: not-icpc
-
-   The test data for the problem can be organized into a tree-like
-   structure. Each node of this tree is represented by a directory and
-   referred to as a test data group. Each test data group may consist of
-   zero or more test cases (i.e., input-answer files) and zero or more
-   subgroups of test data (i.e., subdirectories).
-
-At the top level, the test data is divided into exactly two groups:
-``sample`` and ``secret``. These two groups may be further split into
-subgroups as desired.
-
-.. container:: not-icpc
-
-   The result of a test data group is computed by applying a grader to
-   all of the sub-results (test cases and subgroups) in the group. See
-   `Graders <#graders>`__ for more details.
-
-Test files and groups will be used in lexicographical order on file base
-name. If a specific order is desired a numbered prefix such as ``00``,
-``01``, ``02``, ``03``, and so on, can be used.
-
-
-Invalid Input Files
-~~~~~~~~~~~~~~~~~~~
-
-In the ``data/`` directory, there may be an ``invalid_inputs/``
-directory containing input files that must be rejected by at least one
-input validator. These are meant to only test the input validators, and
-are not used for judging. The rejected input files can be organized into
-a tree-like structure similar to the test data. There may be
-``testdata.yaml`` files within this structure, but they may only contain
-the key ``input_validator_flags``.
-
-.. container:: not-icpc
-
-   .. rubric:: Included Code
-      :name: included-code
-
-   Code that should be included with all submissions are provided in one
-   directory per supported language, called ``include/<language>/``.
-
-   The files should be copied from a language directory based on the
-   language of the submission, to the submission files before compiling,
-   overwriting files from the submission in the case of name collision.
-   Language must be given as one of the language codes in the language
-   table in the overview section. If any of the included files are
-   supposed to be the main file (i.e. a driver), that file must have the
-   language dependent name as given in the table referred above.
-
-Example Submissions
-===================
-
-Correct and incorrect solutions to the problem are provided in
-subdirectories of ``submissions/``. The possible subdirectories are:
-
-+--------------+---------------------------------+---------------------+
-| Value        | Requirement                     | Comment             |
-+==============+=================================+=====================+
-| accepted     | Accepted as a correct solution  | At least one is     |
-|              | for all test files              | required.           |
-+--------------+---------------------------------+---------------------+
-| partia       | Overall verdict must be         | Must not be used    |
-| lly_accepted | Accepted. Overall score must be | for pass-fail       |
-|              | less than ``max_score``.        | problems.           |
-+--------------+---------------------------------+---------------------+
-| wrong_answer | Wrong answer for some test      |                     |
-|              | file, but is not too slow and   |                     |
-|              | does not crash for any test     |                     |
-|              | file                            |                     |
-+--------------+---------------------------------+---------------------+
-| time_li      | Too slow for some test file.    |                     |
-| mit_exceeded | May also give wrong answer but  |                     |
-|              | not crash for any test file.    |                     |
-+--------------+---------------------------------+---------------------+
-| ru           | Crashes for some test file      |                     |
-| n_time_error |                                 |                     |
-+--------------+---------------------------------+---------------------+
-
-Every file or directory in these directories represents a separate
-solution. Same requirements as for submissions with regards to
-filenames. It is mandatory to provide at least one accepted solution.
-
-Submissions must read input data from standard input, and write output
-to standard output.
-
-Input Validation
-----------------
-
-Input Validators, for verifying the correctness of the input files, are
-provided in ``input_validators/``. Input validators can be specified as
-VIVA-files (with file ending ``.viva``), Checktestdata-file (with file
-ending ``.ctd``), or as a program.
-
-All input validators provided will be run on every input file.
-Validation fails if any validator fails.
-
-Input Validator Invocation
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-An input validator program must be an application (executable or
-interpreted) capable of being invoked with a command line call.
-
-All input validators provided will be run on every test data file using
-the arguments specified for the test data group they are part of.
-Validation fails if any validator fails.
-
-When invoked the input validator will get the input file on stdin.
-
-The validator should be possible to use as follows on the command line:
-
-``./validator [arguments] < inputfile``
-
-Output
-~~~~~~
-
-The input validator may output debug information on stdout and stderr.
-This information may be displayed to the user upon invocation of the
-validator.
-
-Exit codes
-~~~~~~~~~~
-
-The input validator must exit with code 42 on successful validation. Any
-other exit code means that the input file could not be confirmed as
-valid.
-
-Dependencies
-^^^^^^^^^^^^
-
-The validator MUST NOT read any files outside those defined in the
-Invocation section. Its result MUST depend only on these files and the
-arguments.
-
-
-How Judging is Done
-===================
-
-Output Validation
------------------
-
-An output validator is a program that is given the output of a submitted
-program, together with the corresponding input file, and a correct
-answer file for the input, and then decides whether the output provided
-is a correct output for the given input file.
-
-The output validator provided will be run on the output for every test
-data file using the arguments specified for the test data group.
-
-Default Output Validator Specification
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The default output validator is essentially a beefed-up diff. 
-In its default mode, it tokenizes the files to compare and compares them token by token. 
-It supports the following command-line arguments to control how tokens are compared.
-
-``case_sensitive``:
-    String comparisons should be case-sensitive. By defaul they are not.
-``space_change_sensitive``:
-    Changes in the amount of whitespace should
-    be rejected (the default is that any sequence of one or
-    more whitespace characters are equivalent).
-``float_relative_tolerance`` ε:
-    Floating-point tokens should be accepted
-    if they are within relative error ≤ ε (see below for details).                                             
-``float_absolute_tolerance`` ε:
-    indicates that floating-point tokens should be accepted
-    if they are within absolute error ≤ ε (see below for    
-    details).                                                 
-``float_tolerance`` ε:
-    short-hand for applying ε as both relative and absolute tolerance.
-
-When supplying both a relative and an absolute tolerance, the semantics
-are that a token is accepted if it is within either of the two
-tolerances. When a floating-point tolerance has been set, any valid
-formatting of floating point numbers is accepted for floating point
-tokens. For instance, if a token in the answer file says ``0.0314``, a
-token of ``3.14000000e-2`` in the output file would be accepted.
-If no floating point tolerance has been set, floating point tokens are treated
-just like any other token and have to match exactly.
-
-
-Judgement
----------
-
-For pass-fail problems, the verdict of a submission is the first
-non-accepted verdict, where test cases are run in lexicographical order
-of their full file paths (note that ``sample`` comes before ``secret``
-in this order).
