@@ -79,10 +79,9 @@ For scoring problems, the behaviour is configured by the following flags under `
 
     **Type:** number
 
-    The maximum score allowed for this test group. It is an error to exceed this.              |
+    The maximum score allowed for this test group. It is an error to exceed this.
 
-    **Default:** The sum/mininum of ``score`` and the subresults’ ``max_score`` values, dependinding on if
-     ``score_aggregation`` is ``"sum"``/``"min"``.
+    **Default:** The sum/mininum of ``score`` and the subresults’ ``max_score`` values, dependinding on if ``score_aggregation`` is ``"sum"``/``"min"``.
 
 .. object:: score_aggregation
 
@@ -90,7 +89,7 @@ For scoring problems, the behaviour is configured by the following flags under `
 
     **Default:** ``"sum"`` in ``data`` and ``data/secret``, else ``"min"``.
 
-   The score for this test group is the sum of the subresult scores. 
+    The score for this test group is the sum of the subresult scores. 
 
 .. object:: verdict_aggregation
 
