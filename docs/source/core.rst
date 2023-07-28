@@ -9,15 +9,27 @@ Problem Statement
 The problem statement of the problem is provided in the directory
 ``problem_statement/``.
 
-This directory must contain one file per language, for at least one
-language, named ``problem.``\ <language>\ ``.``\ <filetype>, that
-contains the problem text itself, including input and output
-specifications, but not sample input and output. Language must be given
-as the shortest ISO 639 code. If needed a hyphen and a ISO 3166-1
-alpha-2 code may be appended to ISO 639 code. Optionally, the language
-code can be left out, the default is then English (``en``). Filetype can
-be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for
-PDF.
+This directory must contain one file per (natural) language, for at least one
+language, named ``problem.<language>.<filetype>``.
+It contains the description of the problem aimed at the solver, 
+including input and output specifications, but not sample input and output.
+Language must be given as the shortest ISO 639 code.
+If needed a hyphen and a ISO 3166-1 alpha-2 code may be appended to ISO 639 code. 
+Optionally, the language code can be left out, the default is then English (``en``).
+Filetype can be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for PDF.
+
+.. code-block ::
+    :caption: problem_statement/problem.en.tex
+    
+    Given two numbers, compute their sum.
+
+    \section*{Input}
+
+    Two lines, each consisting of a single integer in the range $\{-100, \ldots, 100\}$.
+
+    \section*{Output}
+
+    A single line with the sum of the two given integers. 
 
 .. note ::
     Many kinds of transformations on the problem
@@ -25,8 +37,7 @@ PDF.
     document containing many problems will not be possible for PDF problem
     statements, so using PDF should be avoided if at all possible.
 
-Auxiliary files needed by the problem statement files must all be in
-``<problem_id>/problem_statement/``. 
+Auxiliary files needed by the problem statement files must all be in ``problem_statement/``.
 The statement source ``problem.<language>.<filetype>``
 should reference auxiliary files as if the working directory is
 ``<problem_id>/problem_statement/``. 
@@ -59,10 +70,21 @@ Input ``.in``:
 
     *Required*. Explain me.
 
+    .. code-block:: text
+        :caption: data/sample/1.in
+
+        25
+	-4
+
 Default answer ``.ans``:
 
     Must exist for problems that use the default output validator.
     See :ref:`Custom Output Validation`.
+
+    .. code-block:: text
+        :caption: data/sample/1.ans
+
+        21
 
 Hint ``.hint``:
 
@@ -107,6 +129,14 @@ are not used for judging. The rejected input files can be organized into
 a tree-like structure similar to the test data. There may be
 ``testdata.yaml`` files within this structure, but they may only contain
 the key ``input_validator_flags``.
+
+.. code-block:: text
+    :caption: data/invalid_inputs/overflow.in
+
+    25
+    101
+
+
 
 .. container:: not-icpc
 
@@ -160,6 +190,21 @@ filenames. It is mandatory to provide at least one accepted solution.
 Submissions must read input data from standard input, and write output
 to standard output.
 
+.. code-block:: python3
+    :caption: submissions/accepted/ok.py
+
+    a = int(input())
+    b = int(input())
+    print (a + b)
+
+.. code-block:: python3
+    :caption: submissions/wrong_answer/does_not_convert_to_int.py
+
+    a = input()
+    b = input()
+    print (a + b) # WA: gives "25-4" on input "25" and "-4"
+
+
 Input Validation
 ================
 
@@ -170,6 +215,7 @@ ending ``.ctd``), or as a program.
 
 All input validators provided will be run on every input file.
 Validation fails if any validator fails.
+
 
 Input Validator Invocation
 --------------------------
@@ -208,6 +254,18 @@ The validator MUST NOT read any files outside those defined in the
 Invocation section. Its result MUST depend only on these files and the
 arguments.
 
+.. code-block:: python3
+    :caption: input_validators/validate.py
+
+    import sys
+    import re
+
+    for _ in [1,2]:                           # repeat twice:
+        line = sys.stdin.readline()           # read line from standard input
+        re.match("(0|-?[1-9][0-9]+)\n", line) # check against regex
+	assert -100 <= int(line) <= 100       # check bounds
+    assert sys.readline == ""                 # check no more ouput 
+    sys.exit(42)                              # got this far? accept!
 
 How Judging is Done
 ===================
