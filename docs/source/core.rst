@@ -271,6 +271,10 @@ It is good practice to also include the author and license.
     author: Robin McAuthorson
     license: cc by-sa
 
+.. literalinclude:: ../../problems/increment/problem.yaml
+    :language: yaml
+    :caption: increment/problem.yaml
+
 For the full specification, see :ref:`Problem Settings`.
 
 How Judging is Done
