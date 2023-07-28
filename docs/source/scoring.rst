@@ -65,6 +65,7 @@ Grading
 For scoring problems, the behaviour is configured by the following flags under ``grading`` in ``testdata.yaml``:
 
 .. object:: score
+
     **Type:** number
 
     **Default:** 0 in `data/sample`, else 1.
