@@ -36,7 +36,7 @@ A minimal problem has the following structure:
 Their meaning is
 
 ``problem_statement``:
-    A directory holding the testdata that team submissions will be run on. 
+    The problem statement, typically given as a TeX file. 
     See :ref:`Problem Statement`.
 ``data``:
     A directory holding the testdata that team submissions will be run on. It must have two subdirectories;
@@ -58,17 +58,16 @@ File Name Requirements
 ----------------------
 
 The problem ID of the directory must consist solely of lower case letters a-z and digits 0-9. 
-Alternatively it can be a ZIP compressed
-archive of such a directory with identical base name and extension
-``.kpp`` or ``.zip``.
+Alternatively, the problem package can be a ZIP compressed
+archive of such a directory with the ``<problem_id>.kpp`` or ``<problem_id>.zip``.
 
 All file names for files included in the package must match the
 following regexp:
 
 ``[a-zA-Z0-9][a-zA-Z0-9_.-]*[a-zA-Z0-9]``
 
-I.e., it must be of length at least 2, consist solely of lower or upper
-case letters a-z, A-Z, digits 0-9, period, dash or underscore, but must
+That is, file names must be of length at least 2, consist solely of lower or upper
+case letters a-z, A-Z, digits 0-9, period, dash, or underscore, but must
 not begin or end with period, dash or underscore.
 
 All text files for a problem must be UTF-8 encoded and not have a byte

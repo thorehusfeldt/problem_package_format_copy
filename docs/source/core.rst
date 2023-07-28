@@ -6,7 +6,7 @@ This section explains the core part of the problem package format,
 enough to define many interesting problems.
 For illustration, we use a very simple example problem that is fully specified in
 the directory
-`increment <https://github.com/thorehusfeldt/problem_package_format_copy/tree/main/problems/increment>`_
+`increment <https://github.com/thorehusfeldt/problem_package_format_copy/tree/main/problems/increment>`_.
 
 Problem Statement
 =================
@@ -19,9 +19,10 @@ language, named ``problem.<language>.<filetype>``.
 It contains the description of the problem aimed at the solver, 
 including input and output specifications, but not sample input and output.
 Language must be given as the shortest ISO 639 code.
-If needed a hyphen and a ISO 3166-1 alpha-2 code may be appended to ISO 639 code. 
-Optionally, the language code can be left out, the default is then English (``en``).
-Filetype can be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for PDF.
+If needed, a hyphen and an ISO 3166-1 alpha-2 code may be appended to ISO 639 code. 
+Optionally, the language code can be left out.
+The default is then English (``en``).
+Filetype can be either ``tex`` for LaTeX, ``md`` for Markdown, or ``pdf`` for PDF.
 
 .. literalinclude :: ../../problems/increment/problem_statement/problem.en.tex
     :caption: problem_statement/problem.en.tex
@@ -35,19 +36,19 @@ Filetype can be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` 
 Auxiliary files needed by the problem statement files must all be in ``problem_statement/``.
 The statement source ``problem.<language>.<filetype>``
 should reference auxiliary files as if the working directory is
-``<problem_id>/problem_statement/``. 
+``problem_statement/``. 
 Image file formats supported are ``.png``, ``.jpg``, ``.jpeg``, and ``.pdf``.
 
-A LaTeX file may include the Problem name using the LaTeX command
+A LaTeX file may include the problem name using the LaTeX command
 ``\problemname`` in case LaTeX formatting of the title is wanted.
-If it’s not included the problem name specified in ``problem.yaml`` will be used.
+Otherwise, the problem name specified in ``problem.yaml`` will be used.
 
 The problem statements must only contain the actual problem statement, no sample data.
 
 Attachments
 -----------
 
-Public, i.e. non-secret, files to be made available in addition to the
+Public, i.e., non-secret, files can be made available in addition to the
 problem statement and sample test data are provided in the directory
 ``attachments/``.
 
@@ -55,9 +56,9 @@ Test Data
 =========
 
 The test data are provided in subdirectories of ``data/``. 
-The sample data in ``data/sample/`` and the secret data in ``data/secret/``.
+Sample data resides in ``data/sample/`` and secret data resides in ``data/secret/``.
 
-An :term:`test case` has a unique :term:`base name` such as ``data/secret/043-no-edges`` and is determined by its input file, such as ``data/secret/043-no-edges.in``.
+A :term:`test case` has a unique :term:`base name` such as ``data/secret/043-no-edges`` and is determined by its input file, such as ``data/secret/043-no-edges.in``.
 Most test cases have a default answer file with the extension ``.ans``.
 Several other files with the same base name and other extensions than ``.in`` may exist;
 
@@ -137,7 +138,7 @@ the key ``input_validator_flags``.
    Code that should be included with all submissions are provided in one
    directory per supported language, called ``include/<language>/``.
 
-   The files should be copied from a language directory based on the
+   The files are be copied from a language directory based on the
    language of the submission, to the submission files before compiling,
    overwriting files from the submission in the case of name collision.
    Language must be given as one of the language codes in the language
@@ -154,13 +155,13 @@ subdirectories of ``submissions/``.
 Submissions must read input data from standard input, and write output
 to standard output.
 
-An incomplete list possible subdirectories is:
+An incomplete list possible of subdirectories is:
 
 ``accepted``:
 
     Accepted as a correct solution.
     
-    At least one is program in ``accepted`` is required.
+    At least one program in ``accepted`` is required.
 
     .. literalinclude:: ../../problems/increment/submissions/accepted/th.py
         :language: python
@@ -183,7 +184,7 @@ An incomplete list possible subdirectories is:
 
 ``run_time_error``:
 
-    Crashes for some test file
+    Crashes for some test file.
 
     .. literalinclude:: ../../problems/increment/submissions/run_time_error/conversion.py
         :language: python
@@ -192,10 +193,12 @@ An incomplete list possible subdirectories is:
 Input Validation
 ================
 
-Input Validators, for verifying the correctness of the input files, are
-provided in ``input_validators/``. Input validators can be specified as
-VIVA-files (with file ending ``.viva``), Checktestdata-file (with file
-ending ``.ctd``), or as a program.
+Input validators, for verifying the correctness of the input files, are
+provided in ``input_validators/``. 
+Input validators can be specified as
+VIVA-files (with extension ``.viva``), 
+Checktestdata-files (with extension ``.ctd``), 
+or as a program.
 
 All input validators provided will be run on every input file.
 Validation fails if any validator fails.
@@ -212,12 +215,14 @@ An input validator program must be an application (executable or
 interpreted) capable of being invoked with a command line call.
 
 All input validators provided will be run on every test data file using
-the arguments specified for the test data group they are part of.
+the arguments specified for the test data group they are part of;
+see :ref:`input_validator_flags`.
 Validation fails if any validator fails.
+
 
 When invoked the input validator will get the input file on stdin.
 
-The input validator should be possible to use as follows on the command line:
+The input validator must be possible to use as follows on the command line:
 
 ``./validator [arguments] < inputfile``
 
@@ -289,6 +294,6 @@ Timing
 ------
 
 By default, the time limit for a problem is inferred by the judge based on the the example submissions.
-For instance, the time lmit may be twice the slowest running time among the submissions in ``submissions/accepted``, rounded up to the nearest integer number of seconds.
+For instance, the time limit may be twice the slowest running time among the submissions in ``submissions/accepted``, rounded up to the nearest integer number of seconds.
 
 To modify these settings, see :ref:`Problem Timing`.
