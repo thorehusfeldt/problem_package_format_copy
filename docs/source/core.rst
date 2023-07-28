@@ -2,6 +2,11 @@
 Core Problem Package Format
 ***************************
 
+This section explains the core part of the problem package format,
+enough to define many interesting problems.
+For illustration, we use a very simple example problem that is fully specified in
+the directory
+`increment <https://github.com/thorehusfeldt/problem_package_format_copy/tree/main/problems/increment>`_
 
 Problem Statement
 =================
@@ -18,20 +23,10 @@ If needed a hyphen and a ISO 3166-1 alpha-2 code may be appended to ISO 639 code
 Optionally, the language code can be left out, the default is then English (``en``).
 Filetype can be either ``tex`` for LaTeX files, ``md`` for Markdown, or ``pdf`` for PDF.
 
-.. code-block ::
+.. literalinclude :: ../../problems/increment/problem_statement/problem.en.tex
     :caption: problem_statement/problem.en.tex
-    
-    Given two numbers, compute their sum.
 
-    \section*{Input}
-
-    Two lines, each consisting of a single integer in the range $\{-100, \ldots, 100\}$.
-
-    \section*{Output}
-
-    A single line with the sum of the two given integers. 
-
-.. note ::
+.. hint ::
     Many kinds of transformations on the problem
     statements, such as conversion to HTML or styling to fit in a single
     document containing many problems will not be possible for PDF problem
@@ -70,21 +65,16 @@ Input ``.in``:
 
     *Required*. Explain me.
 
-    .. code-block:: text
+    .. literalinclude:: ../../problems/increment/data/sample/1.in
         :caption: data/sample/1.in
-
-        25
-	-4
 
 Default answer ``.ans``:
 
     Must exist for problems that use the default output validator.
     See :ref:`Custom Output Validation`.
 
-    .. code-block:: text
+    .. literalinclude:: ../../problems/increment/data/sample/1.ans
         :caption: data/sample/1.ans
-
-        21
 
 Hint ``.hint``:
 
@@ -124,19 +114,20 @@ Invalid Input Files
 
 In the ``data/`` directory, there may be an ``invalid_inputs/``
 directory containing input files that must be rejected by at least one
-input validator. These are meant to only test the input validators, and
-are not used for judging. The rejected input files can be organized into
-a tree-like structure similar to the test data. There may be
-``testdata.yaml`` files within this structure, but they may only contain
+input validator. 
+These are meant to only test the input validators, and are not used for judging.
+The rejected input files can be organized into a tree-like structure similar to the test data. 
+There may be ``testdata.yaml`` files within this structure, but they may only contain
 the key ``input_validator_flags``.
 
-.. code-block:: text
-    :caption: data/invalid_inputs/overflow.in
+.. literalinclude:: ../../problems/increment/data/invalid_inputs/too_large.in
+    :caption: data/invalid_inputs/too_large.in
 
-    25
-    101
+.. literalinclude:: ../../problems/increment/data/invalid_inputs/not_int.in
+    :caption: data/invalid_inputs/not_int.in
 
-
+.. literalinclude:: ../../problems/increment/data/invalid_inputs/too_many_tokens.in
+    :caption: data/invalid_inputs/too_many_tokens.in
 
 .. container:: not-icpc
 
@@ -171,13 +162,9 @@ An incomplete list possible subdirectories is:
     
     At least one is program in ``accepted`` is required.
 
-    .. code-block:: python3
-        :caption: submissions/accepted/ok.py
-    
-        a = int(input())
-        b = int(input())
-        print (a + b)
-
+    .. literalinclude:: ../../problems/increment/submissions/accepted/th.py
+        :language: python
+        :caption: submissions/accepted/th.py
 
 ``wrong_answer``:
 
@@ -185,12 +172,9 @@ An incomplete list possible subdirectories is:
     case, but is not too slow and
     does not crash for any test case 
 
-    .. code-block:: python3
-        :caption: submissions/wrong_answer/does_not_convert_to_int.py
-    
-        a = input()
-        b = input()
-        print (a + b) # WA: gives "25-4" on input "25" and "-4"
+    .. literalinclude:: ../../problems/increment/submissions/wrong_answer/decrements.py
+        :language: python
+        :caption: submissions/wrong_answer/decrements.py
 
 ``time_limit_exceeded``:
 
@@ -201,8 +185,9 @@ An incomplete list possible subdirectories is:
 
     Crashes for some test file
 
-
-
+    .. literalinclude:: ../../problems/increment/submissions/run_time_error/conversion.py
+        :language: python
+        :caption: submissions/run_time_error/conversion.py
 
 Input Validation
 ================
@@ -214,6 +199,10 @@ ending ``.ctd``), or as a program.
 
 All input validators provided will be run on every input file.
 Validation fails if any validator fails.
+
+    .. literalinclude:: ../../problems/increment/input_validators/validate.ctd
+        :language: yaml
+        :caption: increment/problem.yaml
 
 
 Input Validator Invocation
@@ -244,18 +233,17 @@ valid.
 The validator MUST NOT read any files outside those defined in the Invocation section. 
 Its result MUST depend only on these files and the arguments.
 
-.. code-block:: python3
-    :caption: input_validators/validate.py
-
-    import sys
-    import re
-
-    for _ in [1,2]:                           # repeat twice:
+    .. code-block:: python3
+        :caption: alternative input_validators/validate.py
+    
+        import sys
+        import re
+    
         line = sys.stdin.readline()           # read line from standard input
         re.match("(0|-?[1-9][0-9]+)\n", line) # check against regex
-	assert -100 <= int(line) <= 100       # check bounds
-    assert sys.readline == ""                 # check no more ouput 
-    sys.exit(42)                              # got this far? accept!
+    	assert -32768 <= int(line) < 32766    # check bounds
+        assert sys.readline == ""             # check no more ouput 
+        sys.exit(42)                          # got this far? accept!
 
 
 Problem Settings
@@ -263,13 +251,6 @@ Problem Settings
 
 Problem settings are specified in  `problem.yaml` and must at least include the problem's name.
 It is good practice to also include the author and license.
-
-.. code-block:: yaml
-    :caption: problem.yaml
-
-    name: Add Two Numbers
-    author: Robin McAuthorson
-    license: cc by-sa
 
 .. literalinclude:: ../../problems/increment/problem.yaml
     :language: yaml
