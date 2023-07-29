@@ -2,4 +2,4 @@ name: Increment a Number
 author: Thore Husfeldt
 source: Problem Package Format Documentation
 license: cc by-sa
-problem_package_version: 2023-07
+problem_format_version: 2023-07

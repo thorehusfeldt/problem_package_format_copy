@@ -283,10 +283,33 @@ stated. Any unknown keys should be treated as an error.
 
         languages: [java, apl, pascal]
 
+Here is a formal specification of the `problem.yaml` schema:
+
+.. literalinclude:: ../../support/problem.cue
+    :caption: CUE schema for problem.yaml
+
 Problem Timing
 --------------
 
-These decisions can me influenced by the specifying values for `time_multipliers` and `time_resolution` in `limits` of `problem.yaml` or overriden altogether by specifying an explicit `time_limit`.
+The time limit of a problem is a value between the running times of the accepted example submissions
+and those that are rejected for begin too slow, with robust safety margins.
+More precisely, let :math:`a` denote the maximum running time of the submissions in
+in ``submissions/accepted`` and let :math:`e` denote the minimum running time of the submissions in ``submissions/time_limit_exceeded``.
+If no such submissions exists, set :math:`e =\infty`.
+Then for a resolution :math:`r` and margins :math:`m_1` and :math:`m_2` the time limit :math:`t` is the smallest integer multiple of :math:`r` such that
+
+.. math :: m_1 a \leq t  
+	
+and 
+
+.. math:: m_2 t  \leq e\,.
+
+In other words
+
+.. math :: t = \min_{i\in \mathbf N} \{\, ir \colon m_1 a \leq ir  \leq e/m_2\}\,.
+
+These decisions can me influenced by the specifying values for ``time_multipliers`` (:math:`m_1` and :math:`m_2`) and ``time_resolution`` (:math:`r`) in ``limits`` of ``problem.yaml``.
+They can be overriden altogether by specifying an explicit ``time_limit`` (:math:`t`).
 
 .. code-block:: yaml
     :caption: problem.yaml
@@ -310,7 +333,7 @@ These decisions can me influenced by the specifying values for `time_multipliers
     time_limit_to_tle number   1.5
     ================= ======== =======
 
-    The time multipliers specify safety margins relative to the example submissions, see below.
+    The time multipliers specify safety margins relative to the example submissions.
 
 .. object:: time_resolution
 

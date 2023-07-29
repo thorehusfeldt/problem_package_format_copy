@@ -2,24 +2,19 @@
 Scoring Problems
 ****************
 
-Nothing of this is part of the ICPC specification.
-
-In scoring problems, a submission that is
-accepted is additionally given a score, which is a numeric value (and
-the goal is to maximize this value).
+In scoring problems, accepted submissions are given a numerical :term:`score`, often an integer.
+The goal of the submission is to maximize the score.
 
 
 Test Data Settings
 ------------------
 
 In each test data group, a file ``testdata.yaml`` may be placed to
-specify how the result of the test data group should be computed. If
-a test data group has no ``testdata.yaml`` file, the
-``testdata.yaml`` in the closest ancestor group that has one will be
-used. If there is no ``testdata.yaml`` file in the root ``data``
-group, one is implicitly added with the default values.
+specify how the result of the test data group should be computed.
+If a test data group has no ``testdata.yaml`` file, the ``testdata.yaml`` in the closest ancestor group that has one will be used.
+If there is no ``testdata.yaml`` file in the root ``data`` group, one is implicitly added with the default values.
 
-The following keys can be given in ``testdata.yaml``
+The following keys can be given in ``testdata.yaml``:
 
 .. object:: output_validator_flags
     
@@ -58,6 +53,11 @@ The following keys can be given in ``testdata.yaml``
     and subgroups should be aggregated.                    
     See :ref:`Grading`.
 
+
+The formal specification for `testdata.yaml` is this:
+
+.. literalinclude :: ../../support/testdata.cue
+    :caption: CUE schema for testdata.yaml
 
 Grading
 -------

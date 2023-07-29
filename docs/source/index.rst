@@ -18,4 +18,5 @@ Contents
     settings
     customoutput
     scoring
+    esoterica
     appendix

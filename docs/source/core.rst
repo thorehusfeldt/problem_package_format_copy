@@ -25,6 +25,7 @@ The default is then English (``en``).
 Filetype can be either ``tex`` for LaTeX, ``md`` for Markdown, or ``pdf`` for PDF.
 
 .. literalinclude :: ../../problems/increment/problem_statement/problem.en.tex
+    :language: tex
     :caption: problem_statement/problem.en.tex
 
 .. hint ::
@@ -56,35 +57,30 @@ A :term:`test case` has a unique :term:`base name` such as ``data/secret/043-no-
 Most test cases have a default answer file with the extension ``.ans``.
 Several other files with the same base name and other extensions than ``.in`` may exist;
 
-Input ``.in``:
-
+Input, ``.in``:
     *Required*. Explain me.
 
     .. literalinclude:: ../../problems/increment/data/sample/1.in
         :caption: data/sample/1.in
 
-Default answer ``.ans``:
-
+Default answer, ``.ans``:
     Must exist for problems that use the default output validator.
     See :ref:`Custom Output Validation`.
 
     .. literalinclude:: ../../problems/increment/data/sample/1.ans
         :caption: data/sample/1.ans
 
-Hint ``.hint``:
-
+Hint, ``.hint``:
     The hint file is a text file with filename extension\ ``.hint`` giving a
     hint for solving an input file. The hint file is meant to be given as
     feedback, i.e. to somebody that fails to solve the problem.
 
-Description ``.desc``:    
-
+Description, ``.desc``:    
     The description file is a text file with filename extension ``.desc`` describing the purpose of an input file. 
     The description file is meant to be privileged information that explains the purpose of the related
     test file, e.g., what cases it’s supposed to test.
     
 Illustration:    
-
     The Illustration is an image file with filename extension ``.png``, ``.jpg``, ``.jpeg``, or ``.svg``. 
     The illustration is meant to be privileged information illustrating the related test file.
 
@@ -137,7 +133,6 @@ to standard output.
 An incomplete list possible of subdirectories is:
 
 ``accepted``:
-
     Accepted as a correct solution.
     
     At least one program in ``accepted`` is required.
@@ -147,7 +142,6 @@ An incomplete list possible of subdirectories is:
         :caption: submissions/accepted/th.py
 
 ``wrong_answer``:
-
     Wrong answer for some test
     case, but is not too slow and
     does not crash for any test case 
@@ -157,12 +151,10 @@ An incomplete list possible of subdirectories is:
         :caption: submissions/wrong_answer/decrements.py
 
 ``time_limit_exceeded``:
-
   Too slow for some test case.  
   May also give wrong answer but may not crash for any test case.
 
 ``run_time_error``:
-
     Crashes for some test file.
 
     .. literalinclude:: ../../problems/increment/submissions/run_time_error/conversion.py
@@ -193,17 +185,18 @@ Input Validator Invocation
 An input validator program must be an application (executable or
 interpreted) capable of being invoked with a command line call.
 
-All input validators provided will be run on every test data file using
+All input validators provided will be run on every test case using
 the arguments specified for the test data group they are part of;
-see :ref:`input_validator_flags`.
+see :ref:`Test Data Settings`.
 Validation fails if any validator fails.
-
 
 When invoked the input validator will get the input file on stdin.
 
 The input validator must be possible to use as follows on the command line:
 
-``./validator [arguments] < inputfile``
+.. code-block:: bash
+
+    ./validator [arguments] < inputfile
 
 
 The input validator may output debug information on stdout and stderr.
@@ -250,14 +243,14 @@ either accepted or rejected (though the “rejected” judgement is more
 fine-grained and divided into results such as “Wrong Answer”, “Time
 Limit Exceeded”, etc).
 
-Default Output Validation
--------------------------
+Basic Output Validation
+-----------------------
 
 To validate a submission, an output validator checks the ouput of the submission on the secret test data.
 By default, this process just compares the ``.ans``-file of every test case with the submission's output on the corresponding ``.in``-file.
 The default output validator is lenient with respect to whitespace, and character case, so
 ``34 alice`` is the same as `` 34     AlicE``, but different from ``34.0 alice``, ``034 alice`` and ``34 alicee``.
-For more details, or if you need different behaviour from the default output validator, see :ref:`Modfifying the Default Output Validator`.
+For more details, or if you need different behaviour from the default output validator, see :ref:`Default Output Validation`.
 For problems with more than one correct answer, you need to write your own validator; see :ref:`Custom Output Validation`.
 
 Judgement
@@ -269,10 +262,17 @@ of their full file paths (note that ``sample`` comes before ``secret``
 in this order).
 
 
-Timing
-------
+Default Timing
+--------------
 
 By default, the time limit for a problem is inferred by the judge based on the the example submissions.
-For instance, the time limit may be twice the slowest running time among the submissions in ``submissions/accepted``, rounded up to the nearest integer number of seconds.
+If :math:`a_1,\ldots, a_k` are the running times (in seconds) for the example submissions in
+``submissions/accepted``, then the time limit :math:`t` is given by
+
+.. math :: t = \bigl\lceil 2\cdot\max (a_1,\ldots,a_k)  \bigr\rceil\,.
+
+Moreover, the running time :math:`e` for every submission in ``submissions/time_limit_exceeded`` must satisfy 
+
+.. math :: e \geq \tfrac32 t  \,.
 
 To modify these settings, see :ref:`Problem Timing`.
