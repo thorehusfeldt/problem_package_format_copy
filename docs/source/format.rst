@@ -15,14 +15,13 @@ contests as well as educational use.
 Directory structure
 --------------------
 
-The package consists of a single directory whose name is the problem's unique :term:`problem ID`, such as ``hello``.
-Its subdirectories and some of the files have fixed names.
-There may be more directories, and in particular more subdirectories.
+The package consists of a single directory whose name is the :term:`package name`.
+The package name consists of alphanumerical characters, such as `increment`.
 A minimal problem has the following structure:
 
 ::
 
-    <problem_id>
+    <package_name>
     ├── problem_statement/
     │   └── problem.en.tex
     ├── data/
@@ -33,7 +32,7 @@ A minimal problem has the following structure:
     ├── problem.yaml
     └── input_validators/
 
-Their meaning is
+The meaning of the subdirectories is as follows:
 
 ``problem_statement``:
     The problem statement, typically given as a TeX file. 
@@ -59,7 +58,7 @@ File Name Requirements
 
 The problem ID of the directory must consist solely of lower case letters a-z and digits 0-9. 
 Alternatively, the problem package can be a ZIP compressed
-archive of such a directory with the ``<problem_id>.kpp`` or ``<problem_id>.zip``.
+archive of such a directory with the ``<package_name>.kpp`` or ``<package_name>.zip``.
 
 All file names for files included in the package must match the
 following regexp:

@@ -142,12 +142,11 @@ Glossary
     
         Synonym for contest system or judging environment
 
-    problem ID
+    package name
 
-        The unique, short name of the problem used for the problem's directory,
-       	sometimes referred to as its ``<problem_id>``. 
-	For instance, the problem ID of the problem whose English name is *Hello World!* is ``hello``.
-	The problem ID matches ``[a-z0-9]+``.
+        A string of alphanumerical characters used for the problem's root directory.
+	For instance, the package name of a problem whose English name is *Hello World!* can be ``helloworld``.
+	The package name must match ``[a-z0-9]+``.
 
     problem name
 
