@@ -57,14 +57,14 @@ The meaning of the subdirectories is as follows:
     For a problem to be valid, all input file in `data` must be accepted by the input validators.
     See :ref:`Input Validation`.
 
-With this setup, the :term:`judge` runs a  :term:`solver submission` against the test data in `data` and verifies that it is both correct and fast enough, and produces a judgement. See :ref:`How Judging is Done`.
-
+With this setup, the :term:`judge` runs a  :term:`solver submission` against the test data in `data` and verifies that it is both correct and fast enough, and produces a judgement. 
+See :ref:`How Judging is Done`.
 
 
 Problem Statement
 =================
 
-The problem statement of the problem is provided in the directory
+The problem statement aimed at the solver is provided in the directory
 ``problem_statement/``.
 
 This directory must contain one file per (natural) language, for at least one
@@ -405,10 +405,8 @@ in a YAML file named ``problem.yaml`` placed in the root directory of the packag
 The keys are defined as below. Keys are optional unless explicitly
 stated. Any unknown keys should be treated as an error.
 
-.. object:: name
-
-
-    **Type:** string or map
+.. py:data:: name
+    :type: string or map
 
     When `name` is a map, it maps language codes to strings.
 
@@ -427,55 +425,44 @@ stated. Any unknown keys should be treated as an error.
 
     *Required*
 
-.. object:: version
+.. py:data:: version
+    :type: string
 
-    **Type:** string
-
-    If using this version of the Format must be  the string ``2023-07-draft``.
+    If using this version of the Format must be  the string |version|.
     Will be on the form     ``<yyyy>-<mm>`` for a stable version,
     ``<yyyy>-<mm>-draft`` or ``draft`` for a draft        version, or
     ``legacy`` for the version before the     addition of
-    problem_format_version. Documentation for version ``<version>`` is
-    available at                 https://www.kattis.com
-    /problem-package-format/spec/problem_package_format/. 
+    problem_format_version.
 
-.. object:: type
+.. py:data:: type
+    :type: string
 
-    **Type:** string
+    `"pass-fail"` or `"scoring"`
 
-    **Default:** ``"pass-fail"``
-
-    In ICPC, must be `"pass-fail"`
-    In general, can be `"pass-fail"` or `"scoring"`
-
-.. object:: author
-
-    **Type:** string
+.. py:data:: author
+    :type: string
 
     Who should get author credits. This would typically   be the people that
     came up with the idea, wrote the   problem specification and created the
     test data. This is sometimes omitted when authors choose to instead   only
     give source credit, but both may be specified.   
 
-.. object:: source
-
-    **Type:** string
+.. py:data:: source
+    :type: string
 
     Who should get source credit. This would typically be
     the name (and year) of the event where the problem 
     was first used or created for.      
 
-.. object:: source_url
-
-    **Type:** string
+.. py:data:: source_url
+    :type: string
 
     Link to page for source event. 
     
     *Forbidden* if source is not specified.
 
-.. object:: rights_owner
-
-    **Type:** string
+.. py:data:: rights_owner
+    :type: string
 
     Owner of the copyright of the problem. If not present, author is owner. If
     author is not present either, source is owner. 
@@ -484,9 +471,8 @@ stated. Any unknown keys should be treated as an error.
     
     *Forbidden* if license is ``public domain``. 
 
-.. object:: license
-
-    **Type:** string
+.. py:data:: license
+    :type: string
 
     **Default:** ``"unknown"``
 
@@ -508,15 +494,13 @@ stated. Any unknown keys should be treated as an error.
     ``permission``:
         Used with permission. The author must be contacted for every additional use.                
 
-.. object:: uuid
-
-    **Type**: string
+.. py:data:: uuid
+    :type: string
 
     UUID identifying the problem
 
-.. object:: limits
-
-    **Type**: map
+.. py:data:: limits
+    :type: map
 
     A map defining various limits on the behaviour of an accepted submission,
     Three keys, all optional, determine the time limit.
@@ -558,9 +542,8 @@ stated. Any unknown keys should be treated as an error.
 	  time_limit: 0.5
 	  code: 1
 
-.. object:: validation
-
-    **Type**: string or map
+.. py:data:: validation
+    :type: string or map
 
     **Default**: ``"default"``
 
@@ -594,15 +577,13 @@ stated. Any unknown keys should be treated as an error.
             scoring: true
             interactive: true
 
-.. object:: keywords
-
-    **Type**: list of strings
+.. py:data:: keywords
+    :type: list of strings
 
     List of keywords.                
 
-.. object:: languages
-
-    **Type**: the string ``"all"`` or a list of strings
+.. py:data:: languages
+    :type: the string "all" or a list of strings
 
     *Not ICPC*
 
@@ -655,7 +636,8 @@ They can be overriden altogether by specifying an explicit ``time_limit`` (:math
       time_resolution:
         .5
 
-.. object:: time_multipliers
+.. py:data:: time_multipliers
+    :type: map
 
     **Type:** map with the following keys and defaults:
 
@@ -668,18 +650,16 @@ They can be overriden altogether by specifying an explicit ``time_limit`` (:math
 
     The time multipliers specify safety margins relative to the example submissions.
 
-.. object:: time_resolution
-
-    **Type:**  number
+.. py:data:: time_resolution
+    :type: number
 
     **Default** 1.0
 
     *Forbidden* if `time_limit` is specified.
     (In particular, `time_limit` is not required to be a multiple of the resolution).
 
-.. object:: time_limit
-
-    **Type:**  number
+.. py:data:: time_limit
+    :type: number
 
     **Default** Computed, see below
 
@@ -721,15 +701,13 @@ If there is no ``testdata.yaml`` file in the root ``data`` group, one is implici
 
 The following keys can be given in ``testdata.yaml``:
 
-.. object:: output_validator_flags
-    
-    **Type**: string
+.. py:data:: output_validator_flags
+    :type: string
 
     **Default**: ``""``
 
-.. object:: input_validator_flags
-    
-    **Type**: string or map
+.. py:data:: input_validator_flags
+    :type: string or map
 
     **Default**: ``""``
 
@@ -750,9 +728,8 @@ The following keys can be given in ``testdata.yaml``:
           topology: connected
           bounds: --max_n 50
      
-.. object:: grading
-    
-    **Type**: map
+.. py:data:: grading
+    :type: map
 
     Description of how the results of the group test cases 
     and subgroups should be aggregated.                    
@@ -776,9 +753,8 @@ Grading
 
 For scoring problems, the behaviour is configured by the following flags under ``grading`` in ``testdata.yaml``:
 
-.. object:: score
-
-    **Type:** number
+.. py:data:: score
+    :type: number
 
     **Default:** 0 in `data/sample`, else 1.
 
@@ -787,25 +763,22 @@ For scoring problems, the behaviour is configured by the following flags under `
     score is *multiplied* by the score from the 
     validator.                           
 
-.. object:: max_score
-
-    **Type:** number
+.. py:data:: max_score
+    :type: number
 
     The maximum score allowed for this test group. It is an error to exceed this.
 
     **Default:** The sum/mininum of ``score`` and the subresults’ ``max_score`` values, dependinding on if ``score_aggregation`` is ``"sum"``/``"min"``.
 
-.. object:: score_aggregation
-
-    **Type**: ``"sum"`` or ``"min"``
+.. py:data:: score_aggregation
+    :type: ``"sum"`` or ``"min"``
 
     **Default:** ``"sum"`` in ``data`` and ``data/secret``, else ``"min"``.
 
     The score for this test group is the sum of the subresult scores. 
 
-.. object:: verdict_aggregation
-
-    **Type**: `"first_error"` or `"accept_if_any_accepted"`
+.. py:data:: verdict_aggregation
+    :type: "first_error" or "accept_if_any_accepted"`
 
     **Default:** ``"accept_if_any_accepted"`` in ``data`` and ``data/secret``, else ``"first_error"``.
 
