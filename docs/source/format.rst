@@ -2,12 +2,6 @@
 Problem Package Format
 **********************
 
-This is the ``2023-07-draft`` version of the Kattis problem package
-format.
-
-Overview
-========
-
 This document describes the format of a *Kattis problem package*, used
 for distributing and sharing problems for algorithmic programming
 contests as well as educational use.
@@ -354,12 +348,11 @@ Moreover, the running time :math:`e` for every submission in ``submissions/time_
 .. math :: e \geq \tfrac32 t  \,.
 
 To modify these settings, see :ref:`Problem Timing`.
-*****************************************************
-Problem Settings, Output Validation Flags, and Timing
-*****************************************************
 
+
+*************************
 Default Output Validation
-=========================
+*************************
 
 The default output validator tokenizes the submission output and compares it token by token with the default answer.
 It supports the following flags, which control how tokens are compared.
@@ -398,8 +391,9 @@ The output validator flags are set in ``data/testdata.yaml``:
 
     output_validator_flags: float_tolerance 10e-5
 
+****************
 Problem Settings
-================
+****************
 
 Metadata about the problem (e.g., source, license, limits) are provided
 in a YAML file named ``problem.yaml`` placed in the root directory of the package.
@@ -644,8 +638,9 @@ Here is a formal specification of the `problem.yaml` schema:
 .. literalinclude:: ../../support/problem.cue
     :caption: CUE schema for problem.yaml
 
+**************
 Problem Timing
---------------
+**************
 
 The time limit of a problem is a value between the running times of the accepted example submissions
 and those that are rejected for begin too slow, with robust safety margins.
@@ -731,16 +726,11 @@ It is an error if no such multiple exists.
 
 
 
-****************
-Scoring Problems
-****************
-
-In scoring problems, accepted submissions are given a numerical :term:`score`, often an integer.
-The goal of the submission is to maximize the score.
 
 
+******************
 Test Data Settings
-------------------
+******************
 
 In each test data group, a file ``testdata.yaml`` may be placed to
 specify how the result of the test data group should be computed.
@@ -791,6 +781,13 @@ The formal specification for `testdata.yaml` is this:
 
 .. literalinclude :: ../../support/testdata.cue
     :caption: CUE schema for testdata.yaml
+
+****************
+Scoring Problems
+****************
+
+In scoring problems, accepted submissions are given a numerical :term:`score`, often an integer.
+The goal of the submission is to maximize the score.
 
 Grading
 -------
@@ -857,12 +854,10 @@ With the default output validator it is then sufficient to specify the subtask p
 
 
     Sensible defaults for scoring problems.
+
 ************************
 Custom Output Validation
 ************************
-
-Custum Output Validation
-------------------------
 
 A validator program must be an application (executable or interpreted)
 capable of being invoked with a command line call. The details of this
@@ -883,7 +878,7 @@ must adhere to the Output validator specification described below.
 
 
 Output Validator Invocation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 When invoked the output validator will be passed at least three command
 line parameters and the output stream to validate on stdin.
@@ -942,7 +937,7 @@ to open them for reading. The directory pointed to by feedback_dir must
 also exist.
 
 Reporting a judgement
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 
 An output validator is required to report its judgement by exiting with
 specific exit codes:
@@ -964,7 +959,7 @@ crashing with an exit code of 1, making it unsuitable to assign a
 judgement meaning to this exit code.
 
 Reporting Additional Feedback
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=============================
 
 The purpose of the feedback directory is to allow the validator program
 to report more information to the judging system than just the
@@ -1014,7 +1009,7 @@ validator program creates any files there at all.
    any other code than 42.
 
 Examples
-^^^^^^^^
+--------
 
 An example of a judgemessage.txt file:
 
@@ -1033,34 +1028,15 @@ An example of a teammessage.txt file:
    Almost all test cases failed, are you even trying to solve the problem?
 
 Validator standard output and standard error
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------
 
 A validator program is allowed to write any kind of debug information to
 its standard error pipe. This information may be displayed to the user
 upon invocation of the validator.
 
-Setting Default Output Validator Flags
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In each test data group, a file ``testdata.yaml`` may be placed to
-specify how the result of the test data group should be computed. If
-a test data group has no ``testdata.yaml`` file, the
-``testdata.yaml`` in the closest ancestor group that has one will be
-used. If there is no ``testdata.yaml`` file in the root ``data``
-group, one is implicitly added with the default values.
-
-The following keys can be given in ``testdata.yaml``
-
-.. object:: output_validator_flags
-    
-    **Type**: string
-
-    **Default**: ``""``
-
-.. object:: input_validator_flags
 
 Samples for Interactive Problems
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=================================
 
 For interactive problems, any sample test cases must provide an
 interaction protocol with the extension ``.interaction`` for each sample
