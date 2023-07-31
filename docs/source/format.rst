@@ -435,12 +435,47 @@ stated. Any unknown keys should be treated as an error.
     `"pass-fail"` or `"scoring"`
 
 .. py:data:: author
-    :type: string
+    :type: string or sequence of strings or sequence of maps
 
     Who should get author credits. This would typically   be the people that
     came up with the idea, wrote the   problem specification and created the
     test data. This is sometimes omitted when authors choose to instead   only
     give source credit, but both may be specified.   
+
+    Authors are specified as a sequence strings with their full names (optionally with an email formatted as "Full Name <fullname@problem.example>"), or a sequence of maps with keys name and email. 
+    
+    Here are two valid ways to describe the same two authors:
+
+    .. code-block:: yaml
+	:caption: Example problem.yaml
+	:emphasize-lines: 2
+
+        name: Hello World
+	author: [Author One, Author Two <author.2@problem.example>]
+
+    .. code-block:: yaml
+	:caption: Example problem.yaml
+	:emphasize-lines: 2-5
+	
+        name: Hello World
+        author:
+	  - name: Author One
+	  - name: Author Two
+	    email: author.2@problem.example
+
+
+    When there is only a single author, the value may be a single string:
+
+    .. code-block:: yaml
+	:caption: Example problem.yaml
+	:emphasize-lines: 2
+
+        name: Hello World
+	author: Author McAuthorson <a.mcauthorson@problem.example>
+
+    .. versionadded :: 2.0
+	
+        Allow sequence of maps or strings.
 
 .. py:data:: source
     :type: string

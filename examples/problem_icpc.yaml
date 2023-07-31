@@ -7,6 +7,26 @@ problem_format_version: 2023-07
 license: cc by-sa
 author: Alice McAuthorson
 ---
+# Two authors
+name: Hello World!
+author:
+  - Alice McAuthorson
+  - Penny Writer
+---
+# Auhor and email
+name: Hello World!
+author:
+  - name: Alice McAuthorson
+    email: alice@somewhere.com
+---
+# Two auhors with email
+name: Hello World!
+author:
+  - name: Alice McAuthorson
+    email: alice@somewhere.com
+  - name: Penny Writer 
+    email: penny.writer@somewhereelse.com
+---
 # Can set type, but it's redundant
 name: Hello World!
 type: pass-fail # no other value allowed
