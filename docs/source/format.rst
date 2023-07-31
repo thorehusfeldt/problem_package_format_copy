@@ -76,7 +76,7 @@ Filetype can be either ``tex`` for LaTeX, ``md`` for Markdown, or ``pdf`` for PD
     :language: tex
     :caption: problem_statement/problem.en.tex
 
-.. hint ::
+.. caution ::
     Many kinds of transformations on the problem
     statements, such as conversion to HTML or styling to fit in a single
     document containing many problems will not be possible for PDF problem
@@ -499,7 +499,7 @@ stated. Any unknown keys should be treated as an error.
 
     A map defining various limits on the behaviour of an accepted submission,
     Three keys, all optional, determine the time limit.
-    See :ref:`Problem Timing`.
+    See :ref:`Timing`.
 
     ``time_multipliers``
         is itself a map defining the values ``ac_to_time_limit`` and ``time_limit_to_tle``.
@@ -669,7 +669,7 @@ If no ``time_limit`` is provided, the default value is the smallest integer mult
 of ``time_resolution`` that satisfies these inequalities. 
 It is an error if no such multiple exists.
 
-.. note ::
+.. hint ::
 
     Since time multipliers are more future-proof than absolute time limits, 
     avoid specifying ``time_limit`` whenever practical.
