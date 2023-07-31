@@ -2,12 +2,13 @@
 Problem Package Format
 **********************
 
+
 This document describes the format of a *Kattis problem package*, used
 for distributing and sharing problems for algorithmic programming
 contests as well as educational use.
 
 Directory structure
---------------------
+===================
 
 The package consists of a single directory whose name is the :term:`package name`.
 The package name consists of alphanumerical characters, such as `increment`.
@@ -32,7 +33,7 @@ The meaning of the subdirectories is as follows:
     The problem statement, typically given as a TeX file. 
     See :ref:`Problem Statement`.
 ``data``:
-    A directory holding the testdata that team submissions will be run on. It must have two subdirectories;
+    A directory holding the testdata that solver submissions will be run on. It must have two subdirectories;
     `sample` holds the sample inputs and answers shown to the team,
     `secret` holds the secret input. See :ref:`Test Data`.
 ``submissions``:
@@ -45,10 +46,10 @@ The meaning of the subdirectories is as follows:
     For a problem to be valid, all input file in `data` must be accepted by the input validators.
     See :ref:`Input Validation`.
 
-With this setup, the :term:`judge` runs a  :term:`team submission` against the test data in `data` and verifies that it is both correct and fast enough, and produces a judgement. See :ref:`How Judging is Done`.
+With this setup, the :term:`judge` runs a  :term:`solver submission` against the test data in `data` and verifies that it is both correct and fast enough, and produces a judgement. See :ref:`How Judging is Done`.
 
 File Name Requirements
-----------------------
+======================
 
 The problem ID of the directory must consist solely of lower case letters a-z and digits 0-9. 
 Alternatively, the problem package can be a ZIP compressed
@@ -79,6 +80,7 @@ enough to define many interesting problems.
 For illustration, we use a very simple example problem that is fully specified in
 the directory
 `increment <https://github.com/thorehusfeldt/problem_package_format_copy/tree/main/problems/increment>`_.
+
 
 Problem Statement
 =================
@@ -125,8 +127,9 @@ Test Data
 The test data are provided in subdirectories of ``data/``. 
 Sample data resides in ``data/sample/`` and secret data resides in ``data/secret/``.
 
-A :term:`test case` has a unique :term:`base name` such as ``data/secret/043-no-edges`` and is determined by its input file, such as ``data/secret/043-no-edges.in``.
-Most test cases have a default answer file with the extension ``.ans``.
+A :term:`test case` has a unique test case name such as ``secret/043-no-edges`` and is determined by its input file, such as ``secret/043-no-edges.in``.
+TODO: no consensus about this.
+In most problems, every test case have a :term:`default answer` file with the extension ``.ans``.
 Several other files with the same base name and other extensions than ``.in`` may exist;
 
 Input, ``.in``:
@@ -295,8 +298,8 @@ Its result MUST depend only on these files and the arguments.
         sys.exit(42)                          # got this far? accept!
 
 
-Problem Settings
-================
+Basic Problem Settings
+======================
 
 Problem settings are specified in  `problem.yaml` and must at least include the problem's name.
 It is good practice to also include the author and license.
@@ -790,7 +793,7 @@ In scoring problems, accepted submissions are given a numerical :term:`score`, o
 The goal of the submission is to maximize the score.
 
 Grading
--------
+=======
 
 For scoring problems, the behaviour is configured by the following flags under ``grading`` in ``testdata.yaml``:
 
@@ -1202,6 +1205,12 @@ Glossary
 
 	An instance to the problem.
         The predecessors of a testcase are testgroups, but not the root.
+
+    default answer
+
+        A valid answer to a test case; 
+	in some problems the only valid answer to a test case.
+	Typically, a problem package contains a valid answer to every test case.
     
     test group
 
@@ -1213,20 +1222,29 @@ Glossary
 
     solver
 
-        Person or group of persons trying to solve the problem. Synonym: team
+        Person or group of persons trying to solve the problem. 
+	Sometimes called _team_, in particular in competetive context where solvers form teams.
+
+    solver submission
+
+        A program submitted by a solver to the judge.
 
     submission
 
-        A program submitted by a solver to the judge, 
-	or an example submission, which is part of the problem package.
+	A program that aims to solve the problem.
+	Can be a :term:`solver submission` or an :term:`example submission`.
+	
+    example submission
+    
+        A program in `<package_name>/submissions`.
 
     task
 
-        Synonym for problem 
+        Synonym for problem.
 
     judge
     
-        Synonym for contest system or judging environment
+        Synonym for contest system or judging environment.
 
     package name
 
