@@ -1,8 +1,3 @@
-**********************
-Problem Package Format
-**********************
-
-
 This document describes the format of a *Kattis problem package*, used
 for distributing and sharing problems for algorithmic programming
 contests as well as educational use.
@@ -329,7 +324,7 @@ Moreover, the running time :math:`e` for every submission in ``submissions/time_
 
 .. math :: e \geq \tfrac32 t  \,.
 
-To modify these settings, see :ref:`Problem Timing`.
+To modify these settings, see :ref:`Timing`.
 
 
 *************************
@@ -601,9 +596,9 @@ Here is a formal specification of the `problem.yaml` schema:
 .. literalinclude:: ../../support/problem.cue
     :caption: CUE schema for problem.yaml
 
-**************
-Problem Timing
-**************
+******
+Timing
+******
 
 The time limit of a problem is a value between the running times of the accepted example submissions
 and those that are rejected for begin too slow, with robust safety margins.
@@ -741,9 +736,9 @@ The formal specification for `testdata.yaml` is this:
 .. literalinclude :: ../../support/testdata.cue
     :caption: CUE schema for testdata.yaml
 
-****************
-Scoring Problems
-****************
+***************
+Subtask Scoring
+***************
 
 In scoring problems, accepted submissions are given a numerical :term:`score`, often an integer.
 The goal of the submission is to maximize the score.
