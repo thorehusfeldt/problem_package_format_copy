@@ -14,9 +14,3 @@ Contents
     :maxdepth: 2
 
     format
-    core
-    settings
-    customoutput
-    scoring
-    esoterica
-    appendix

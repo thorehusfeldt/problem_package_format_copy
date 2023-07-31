@@ -17,7 +17,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.autosectionlabel'
+    'sphinx.ext.autosectionlabel',
 ]
 
 intersphinx_mapping = {
@@ -30,8 +30,9 @@ templates_path = ['_templates']
 
 # -- Options for HTML output
 
-html_theme = 'classic'
-#html_theme = 'sphinx_rtd_theme'
+#html_theme = 'classic'
+html_theme = 'sphinx_rtd_theme'
+#html_theme = 'sphinxdoc'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
