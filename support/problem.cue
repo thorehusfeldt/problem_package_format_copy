@@ -4,7 +4,7 @@ package problem_package
 	name:                    string | close({[#language_code]: string})
 	problem_format_version?: *"legacy" | "draft" | =~"^[0-9]{4}-[0-9]{2}(-draft)?$"
 
-	author?:       string | [...string] | [...#author]
+	author?:       string | [...string] | [...close({name: string, email: string})]
 	source?:       string
 	source_url?:   string // only allow if source exists
 	license?:      *"unknown" | "public domain" | #license_with_rights
@@ -31,11 +31,6 @@ package problem_package
 }
 
 #problem_settings
-
-#author: {
-	name:  string
-	email: string
-}
 
 #license_with_rights: "cc0" | "cc by" | "cc by-sa" | "educational" | "permission"
 #language_code:       =~"^[a-z]{2,4}(-[A-Z][A-Z])?$"
