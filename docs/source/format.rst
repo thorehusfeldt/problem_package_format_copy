@@ -771,15 +771,22 @@ The formal specification for `testdata.yaml` is this:
 .. literalinclude :: ../../support/testdata.cue
     :caption: CUE schema for testdata.yaml
 
-***************
-Subtask Scoring
-***************
+*******
+Judging
+*******
+
+
+Pass–Fail Problems
+==================
+
+For problems of type ``pass-fail``,  the verdict of a submission is the first non-accepted verdict of a test case.
+Test cases are ordered lexicographically order of their full file paths; note that ``sample`` comes before ``secret`` in this order.
+
+Scoring Problems
+================
 
 In scoring problems, accepted submissions are given a numerical :term:`score`, often an integer.
 The goal of the submission is to maximize the score.
-
-Grading
-=======
 
 For scoring problems, the behaviour is configured by the following flags under ``grading`` in ``testdata.yaml``:
 
@@ -807,36 +814,30 @@ For scoring problems, the behaviour is configured by the following flags under `
 
     The score for this test group is the sum of the subresult scores. 
 
-.. py:data:: verdict_aggregation
-    :type: "first_error" or "accept_if_any_accepted"`
-
-    **Default:** ``"accept_if_any_accepted"`` in ``data`` and ``data/secret``, else ``"first_error"``.
-
-    If ``first_error``, the verdict is that of the first non-accepted subresult. 
-    Only test cases in the group up to the first non-accepted case are judged. 
-
-    If ``accept_if_any_accepted``, the verdict is accepted if any subresult is accepted,   
-    otherwise that of the first non-accepted subresult.     
-    All test cases in the group are judged.
-
 The defaults are chosen so that that problems with scoring subtasks can be organised as follows:
 
 .. code-block:: text
 
     data
-      +-sample
-      +-secret
-        +-subtask1
-        +-subtask2
-        +-subtask3
+    ├──sample
+    └──secret
+       ├── subtask1
+       ├── subtask2
+       └── subtask3
 
 With the default output validator it is then sufficient to specify the subtask points as an integer value of `score` in the three `subtask` directories.
 
-.. versionadded:: 2.
-    `score` is a multiplier for scoring output validators. In particular, if an output validator assigns the
+.. versionchanged:: 2.0
+
+    `score` is now a multiplier for scoring output validators. In particular, if an output validator assigns the
     default score 1 to an accepted solution, the resulting value is exacly `score`,
     consistent with the previous behaviour for non-scoring validators.
 
+.. versionchanged:: 2.0
+
+    Removed verdict aggregation rules, restricted grade aggregation rules to only  ``"min"`` and ``"sum"``.
+
+.. versionadded:: 2.0
 
     Sensible defaults for scoring problems.
 
