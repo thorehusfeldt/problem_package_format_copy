@@ -53,7 +53,7 @@ The meaning of the subdirectories is as follows:
     See :ref:`Input Validation`.
 
 With this setup, the :term:`judge` runs a  :term:`solver submission` against the test data in `data` and verifies that it is both correct and fast enough, and produces a judgement. 
-See :ref:`How Judging is Done`.
+See :ref:`How Pass–Fail Problems are Judged`.
 
 
 Problem Statement
@@ -284,31 +284,26 @@ It is good practice to also include the author and license.
 
 For the full specification, see :ref:`Problem Settings`.
 
-How Judging is Done
-===================
+How Pass–Fail Problems are Judged
+=================================
 
-In pass-fail problems, submissions are basically judged as
-either accepted or rejected (though the “rejected” judgement is more
-fine-grained and divided into results such as “Wrong Answer”, “Time
-Limit Exceeded”, etc).
+For problems of type `pass-fail`, the judge validates the solver submission by running it on test cases in `data/`.
 
 Basic Output Validation
 -----------------------
 
-To validate a submission, an output validator checks the ouput of the submission on the secret test data.
+To validate a submission, an output validator checks the ouput of the submission on the test data.
 By default, this process just compares the ``.ans``-file of every test case with the submission's output on the corresponding ``.in``-file.
 The default output validator is lenient with respect to whitespace, and character case, so
 ``34 alice`` is the same as `` 34     AlicE``, but different from ``34.0 alice``, ``034 alice`` and ``34 alicee``.
 For more details, or if you need different behaviour from the default output validator, see :ref:`Default Output Validation`.
 For problems with more than one correct answer, you need to write your own validator; see :ref:`Custom Output Validation`.
 
-Judgement
----------
+The Verdict of a Submission
+---------------------------
 
-For pass-fail problems, the verdict of a submission is the first
-non-accepted verdict, where test cases are run in lexicographical order
-of their full file paths (note that ``sample`` comes before ``secret``
-in this order).
+For problems of type ``pass-fail``, the verdict of a submission is the first non-accepted verdict of a test case.
+Test cases are ordered lexicographically in order of their full file paths; note that ``sample`` comes before ``secret`` in this order.
 
 
 Default Timing
@@ -761,9 +756,8 @@ The following keys can be given in ``testdata.yaml``:
 .. py:data:: grading
     :type: map
 
-    Description of how the results of the group test cases 
-    and subgroups should be aggregated.                    
-    See :ref:`Grading`.
+    Description of how the results of the group test cases and subgroups should be aggregated. 
+    See :ref:`Testdata Scoring Settings`.
 
 
 The formal specification for `testdata.yaml` is this:
@@ -771,34 +765,44 @@ The formal specification for `testdata.yaml` is this:
 .. literalinclude :: ../../support/testdata.cue
     :caption: CUE schema for testdata.yaml
 
-*******
-Judging
-*******
+*******************************
+How Scoring Problems are Judged
+*******************************
 
-
-Pass–Fail Problems
-==================
-
-For problems of type ``pass-fail``,  the verdict of a submission is the first non-accepted verdict of a test case.
-Test cases are ordered lexicographically order of their full file paths; note that ``sample`` comes before ``secret`` in this order.
-
-Scoring Problems
-================
-
-In scoring problems, accepted submissions are given a numerical :term:`score`, often an integer.
+In scoring problems, submissions are given a nonnegative :term:`score`.
 The goal of the submission is to maximize the score.
 
-For scoring problems, the behaviour is configured by the following flags under ``grading`` in ``testdata.yaml``:
+Scoring and Non-Scoring Output Validators
+=========================================
+
+Given a submission, the *score of an accepted test case* is defined as follows:
+If the output validator accepts the output of a submission on test case ``tc`` then the score of ``tc`` is
+
+1. if ``validation:scoring``, the numerical output of the output validator,
+
+2. otherwise, the settings of the parent test group of ``tc``.
+
+Let :math:`G` be a test group containing :math:`k` subgroups and :math:`l` accepted test cases.
+If :math:`k+l=0` then the score of :math:`G` is :math:`0`.
+Otherwise, the score depends on the *aggregation* mode of :math:`G`, which is either ``min`` or ``sum``.
+Let :math:`s_1,\ldots, s_{k+l}` denote the scores of the subgroups and accepted test cases.
+Then the score of ``G`` is :math:`s_1 + \cdots+ s_{k+l}` if the mode is ``sum``, 
+or :math:`\min(s_1, \ldots, s_{k+l})` if the mode is ``min``.
+
+Finally, the *score of a submission* is its score on the topmost test group `data`. 
+
+Testdata Scoring Settings
+=========================
+
+For scoring problems, the behaviour is configured for each test group by the following flags under ``grading`` in ``testdata.yaml``:
 
 .. py:data:: score
     :type: number
 
     **Default:** 0 in `data/sample`, else 1.
 
-    The score assigned to an accepted input file in the 
-    group. If a scoring output validator is used, this 
-    score is *multiplied* by the score from the 
-    validator.                           
+    The score assigned to an accepted test case in the group.
+    If a scoring output validator is used, this score is *multiplied* by the score from the validator.                           
 
 .. py:data:: max_score
     :type: number
@@ -1188,19 +1192,11 @@ Glossary
 .. glossary::
 
     verdict
-        one of the strings 'AC', 'WA', 'TLE', 'RTE', or 'JE'
+        one of the strings 'AC', 'WA', 'TLE', 'RTE', or 'JE'.
     
     score
-        a number
-
-    grade
-        a verdict and a score
-    
-    judgement
-        in a pass-fail problem, same as :term:`verdict`. In a scoring problems, same as :term:`grade`.
-    
-    gradeable
-        A testcase or a testroup, i.e., something that can have a grade.
+        a nonnegative number associated with accepted test cases and
+	test groups for a submission to a scoring problem.
     
     test data
     
@@ -1220,9 +1216,10 @@ Glossary
     
     test group
 
-        An non-leaf node in the test data. The test groups form a rooted
-        tree. The root has one or two children, which are called ``sample``
-        and ``secret``. The names of all other test groups, if they exist,
+        An non-leaf node in the test data. 
+	The test groups form a rooted tree. 
+	The root has one or two children, which are called ``sample`` and ``secret``. 
+	The names of all other test groups, if they exist,
         describe their position in the testdata tree, such as ``secret/group1``
         or ``secret/connected/cycles``.
 
