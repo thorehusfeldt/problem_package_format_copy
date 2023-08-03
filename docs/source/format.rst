@@ -152,13 +152,11 @@ If a specific order is desired a numbered prefix such as ``00``, ``01``, ``02``,
 Invalid Input Files
 -------------------
 
-In the ``data/`` directory, there may be an ``invalid_inputs/``
-directory containing input files that must be rejected by at least one
+The optional directory ``data/invalid_inputs/`` contains inputs that must be rejected by at least one
 input validator. 
-These are meant to only test the input validators, and are not used for judging.
-The rejected input files can be organized into a tree-like structure similar to the test data. 
-There may be ``testdata.yaml`` files within this structure, but they may only contain
-the key ``input_validator_flags``.
+Their purpose is to test the input validators; they are not used for judging.
+The invalid input files can be organized into a tree-like structure similar to the test data. 
+There may be ``testdata.yaml`` files within this structure.
 
 .. literalinclude:: ../../problems/increment/data/invalid_inputs/too_large.in
     :caption: data/invalid_inputs/too_large.in
@@ -260,7 +258,7 @@ The validator MUST NOT read any files outside those defined in the Invocation se
 Its result MUST depend only on these files and the arguments.
 
     .. code-block:: python3
-        :caption: alternative input_validators/validate.py
+        :caption: Alternative input_validators/validate.py for Problem increment
     
         import sys
         import re
@@ -275,7 +273,7 @@ Its result MUST depend only on these files and the arguments.
 Basic Problem Settings
 ======================
 
-Problem settings are specified in  `problem.yaml` and must at least include the problem's name.
+Problem settings are specified in  ``problem.yaml`` and must at least include the problem's name.
 It is good practice to also include the author and license.
 
 .. literalinclude:: ../../problems/increment/problem.yaml
@@ -287,7 +285,7 @@ For the full specification, see :ref:`Problem Settings`.
 How Pass–Fail Problems are Judged
 =================================
 
-For problems of type `pass-fail`, the judge validates the solver submission by running it on test cases in `data/`.
+For problems of type ``pass-fail``, the judge validates the solver submission by running it on test cases in ``data/``.
 
 Basic Output Validation
 -----------------------
@@ -295,7 +293,7 @@ Basic Output Validation
 To validate a submission, an output validator checks the ouput of the submission on the test data.
 By default, this process just compares the ``.ans``-file of every test case with the submission's output on the corresponding ``.in``-file.
 The default output validator is lenient with respect to whitespace, and character case, so
-``34 alice`` is the same as `` 34     AlicE``, but different from ``34.0 alice``, ``034 alice`` and ``34 alicee``.
+``34 alice`` is the same as ``34     AlicE``, but different from ``34.0 alice``, ``034 alice`` and ``34 alicee``.
 For more details, or if you need different behaviour from the default output validator, see :ref:`Default Output Validation`.
 For problems with more than one correct answer, you need to write your own validator; see :ref:`Custom Output Validation`.
 
@@ -364,17 +362,14 @@ When a floating-point tolerance has been set, any valid formatting of floating p
 For instance, if a token in the answer file says ``0.0314``, a token of ``3.14000000e-2`` in the output file would be accepted.
 If no floating point tolerance has been set, floating point tokens are treated just like any other token and have to match exactly.
 
-The output validator flags are set in ``data/testdata.yaml``:
+The output validator flags are set in ``data/testdata.yaml``.
+Here are some examples:
 
-.. code-block:: yaml
-    :caption: data/problem.yaml
+.. literalinclude:: ../examples/testdata/output_validator_flags_1.yaml
+    :language: yaml
 
-    output_validator_flags: case_sensitive space_change_sensitive
-
-.. code-block:: yaml
-    :caption: data/problem.yaml
-
-    output_validator_flags: float_tolerance 10e-5
+.. literalinclude:: ../examples/testdata/output_validator_flags_2.yaml
+    :language: yaml
 
 ****************
 Problem Settings
@@ -383,27 +378,12 @@ Problem Settings
 Metadata about the problem (e.g., source, license, limits) are provided
 in a YAML file named ``problem.yaml`` placed in the root directory of the package.
 
-.. code-block:: yaml
-    :caption: problem.yaml
+.. literalinclude :: ../examples/problem/icpc/name_author_license.yaml
+    :language: yaml
 
-    name: Hello Moon
-    problem_format_version: 2023-07
-    author: Robin McAuthorson
-    license: cc by-sa
 
-.. code-block:: yaml
-    :caption: problem.yaml
-
-    name: Hello Moon
-    problem_format_version: 2023-07
-    author: Robin McAuthorson
-    source: Lunar Collegiate Programming Contest NCPC 2023
-    source_url: lunar.icpc.io
-    license: cc by-sa
-    rights_owner: Miscatonic University
-    type: pass-fail
-    validation:
-        interactive: true
+.. literalinclude :: ../examples/problem/icpc/rich_example_settings.yaml
+    :language: yaml
 
 The keys are defined as below. Keys are optional unless explicitly
 stated. Any unknown keys should be treated as an error.
@@ -411,20 +391,16 @@ stated. Any unknown keys should be treated as an error.
 .. py:data:: name
     :type: string or map
 
-    When `name` is a map, it maps language codes to strings.
+    If a map, it maps language codes to problem names.
 
-    .. code-block:: yaml
-	:caption: problem.yaml
+    .. literalinclude :: ../examples/problem/icpc/name_map.yaml
+        :language: yaml
 
-        name: Hello World!
+    If a string, it is the problem name in some language.
 
-    .. code-block:: yaml
-	:caption: problem.yaml
-
-        name: 
-	  en: Hello World!
-	  fr: Bonjour Le Monde!
-	  de: Hallo Welt
+    .. literalinclude :: ../examples/problem/icpc/name_only.yaml
+        :language: yaml
+    
 
     *Required*
 

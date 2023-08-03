@@ -12,6 +12,20 @@ else
 	echo "WARNING: Not all ICPC examples validated"
 fi
 
+for f in docs/examples/problem/*.yaml; do
+ 	cue vet support/problem.cue "$f" >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		echo "WARNING: Example problem.yaml file $f not valid"
+	fi
+done
+
+for f in docs/examples/testdata/*.yaml; do
+ 	cue vet support/testdata.cue "$f"  >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		echo "WARNING: Example testdata.yaml file $f not valid"
+	fi
+done
+
 output_dir="tmp"
 mkdir -p  "$output_dir/full"
 

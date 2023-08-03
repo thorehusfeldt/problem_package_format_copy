@@ -1,0 +1,11 @@
+name: Hello Moon
+problem_format_version: 2023-07
+author: Robin McAuthorson
+source: Lunar Collegiate Programming Contest NCPC 2023
+source_url: lunar.icpc.io
+license: cc by-sa
+rights_owner: Miscatonic University
+type: pass-fail
+validation:
+  interactive: true
+
