@@ -302,8 +302,21 @@ For problems with more than one correct answer, you need to write your own valid
 The Verdict of a Submission
 ---------------------------
 
-For problems of type ``pass-fail``, the verdict of a submission is the first non-accepted verdict of a test case.
-Test cases are ordered lexicographically in order of their full file paths; note that ``sample`` comes before ``secret`` in this order.
+For problems of type ``pass-fail``, the verdict of a submission is *accepted* if all test cases pass.
+Otherwise the submission receives a *rejected* verdict.
+The precise verdict is determined by the first failed test case, 
+where test cases are ordered lexicographically in order of their full file paths
+Note that this orders all test cases in ``sample`` before those in ``secret``.
+The rejected verdicts are
+
+Run Time Error
+    The sumbission terminated with a runtime error
+
+Time Limit Exceeded
+    The sumbission did not terminate within the time limit, see :ref:`Default Timing` and :ref:`Timing`.
+
+Wrong Answer
+    The output validator rejected the submission's output
 
 
 Default Timing
@@ -757,7 +770,7 @@ The following keys can be given in ``testdata.yaml``:
     :type: map
 
     Description of how the results of the group test cases and subgroups should be aggregated. 
-    See :ref:`Testdata Scoring Settings`.
+    See :ref:`Testdata Settings for Scoring`.
 
 
 The formal specification for `testdata.yaml` is this:
@@ -772,29 +785,30 @@ How Scoring Problems are Judged
 In scoring problems, submissions are given a nonnegative :term:`score`.
 The goal of the submission is to maximize the score.
 
-Scoring and Non-Scoring Output Validators
-=========================================
+Given a submission, scores are determined for test cases, test groups, and the submission itself.
 
-Given a submission, the *score of an accepted test case* is defined as follows:
-If the output validator accepts the output of a submission on test case ``tc`` then the score of ``tc`` is
+Score of a test case
+    The score of a failed test case is always :math:`0`.
+    By default, the  *score of an passed test case* is :math:`1`.
+    If a custom output validator produces a score 
+    (indicated by ``scoring: True`` under ``validation`` in the problem settings, 
+    see :ref:`Problem Settings` and :ref:`Custom Output Validation`),
+    then that value is used instead.
 
-1. if ``validation:scoring``, the numerical output of the output validator,
+Score of a test group    
+    Let :math:`G` be a test group containing :math:`r` subgroups and test cases with scores :math:`s_1,\ldots, s_r`, respectively.
+    If :math:`r=0` then the score of :math:`G` is :math:`0`.
+    Otherwise, the score depends on the *aggregation* mode of :math:`G`, which is either ``min`` or ``sum``.
+    The score of ``G`` is :math:`s_1 + \cdots+ s_r` if the mode is ``sum``, 
+    or :math:`\min(s_1, \ldots, s_r)` if the mode is ``min``.
 
-2. otherwise, the settings of the parent test group of ``tc``.
+Score of the submission
+    Finally, the *submission's score* is its score on the topmost test group ``data``. 
 
-Let :math:`G` be a test group containing :math:`k` subgroups and :math:`l` accepted test cases.
-If :math:`k+l=0` then the score of :math:`G` is :math:`0`.
-Otherwise, the score depends on the *aggregation* mode of :math:`G`, which is either ``min`` or ``sum``.
-Let :math:`s_1,\ldots, s_{k+l}` denote the scores of the subgroups and accepted test cases.
-Then the score of ``G`` is :math:`s_1 + \cdots+ s_{k+l}` if the mode is ``sum``, 
-or :math:`\min(s_1, \ldots, s_{k+l})` if the mode is ``min``.
+Testdata Settings for Scoring
+=============================
 
-Finally, the *score of a submission* is its score on the topmost test group `data`. 
-
-Testdata Scoring Settings
-=========================
-
-For scoring problems, the behaviour is configured for each test group by the following flags under ``grading`` in ``testdata.yaml``:
+For scoring behaviour is configured for each test group by the following flags under ``grading`` in ``testdata.yaml``:
 
 .. py:data:: score
     :type: number
@@ -812,24 +826,71 @@ For scoring problems, the behaviour is configured for each test group by the fol
     **Default:** The sum/mininum of ``score`` and the subresults’ ``max_score`` values, dependinding on if ``score_aggregation`` is ``"sum"``/``"min"``.
 
 .. py:data:: score_aggregation
-    :type: ``"sum"`` or ``"min"``
+    :type: "sum" or "min"
 
     **Default:** ``"sum"`` in ``data`` and ``data/secret``, else ``"min"``.
 
     The score for this test group is the sum of the subresult scores. 
 
-The defaults are chosen so that that problems with scoring subtasks can be organised as follows:
+Use Cases
+---------
 
-.. code-block:: text
+The defaults are chosen to make some common use cases easy to implement for scoring problems.
 
-    data
-    ├──sample
-    └──secret
-       ├── subtask1
-       ├── subtask2
-       └── subtask3
+Number of passed test cases
+    Organise the test data by placing :math:`n` test cases directly in `data/secret` like this; 
 
-With the default output validator it is then sufficient to specify the subtask points as an integer value of `score` in the three `subtask` directories.
+    .. code-block:: text
+    
+        data
+        ├──sample
+        └──secret
+           ├── test case 1
+           ├── ...
+           └── test case n
+
+    Then the default output validator assigns score :math:`1` to every accepted test case,
+    and the default aggregation mode of of `data/secret` adds these values.
+    In effect, the submission score will be the *number of passed test cases*.
+
+Subtasks
+    A *scored subtask problem* consists of :math:`k` subtasks (typically restrictions on the full task).
+    A submission that passes  test cases in subtask :math:`i` receives :math:`s_i` points.
+    For instance, subtask 1 gives 23 points.
+    To that end, organise the test data by placing :math:`k` test groups directly in `data/secret` like this; 
+
+    .. code-block:: text
+    
+        data
+        ├──sample
+        └──secret
+           ├── subtask_1
+           │   ├── test case
+           │   ├── ...
+           │   └── test case
+           ├── ...
+           └── subtask_k
+               ├── test case
+               ├── ...
+               └── test case
+
+    and set
+
+    .. code-block:: yaml
+        :caption: `testdata.yaml` in subtask_1
+
+	score: 23
+
+    The default aggregation setting ``min`` of ``secret/subtask_1`` ensures that its score is 23 exactly if all its test cases passed, otherwise it is 0.
+    The default aggregation setting ``sum`` of ``secret`` adds the scores for every subtask.
+   
+
+Fractional scoring
+    To be written. See :ref:`Custom Output Validation`.
+    
+
+
+   
 
 .. versionchanged:: 2.0
 
@@ -1195,11 +1256,14 @@ Glossary
         one of the strings 'AC', 'WA', 'TLE', 'RTE', or 'JE'.
     
     score
-        a nonnegative number associated with accepted test cases and
-	test groups for a submission to a scoring problem.
+        a nonnegative number associated with a submission to a :term:`scoring problem`.
+	Scores are given to accepted test cases and individual test groups, resulting
+        in a score for the submission itself.
+
+    scoring problem
+        A problem with setting ``type:scoring``.
     
     test data
-    
         A simple directed acyclic graph whose leaves are test cases.
         The test data without the leaves form a rooted tree.
     
