@@ -378,11 +378,11 @@ Problem Settings
 Metadata about the problem (e.g., source, license, limits) are provided
 in a YAML file named ``problem.yaml`` placed in the root directory of the package.
 
-.. literalinclude :: ../examples/problem/icpc/name_author_license.yaml
+.. literalinclude :: ../examples/problem/name_author_license.yaml
     :language: yaml
 
 
-.. literalinclude :: ../examples/problem/icpc/rich_example_settings.yaml
+.. literalinclude :: ../examples/problem/rich_example_settings.yaml
     :language: yaml
 
 The keys are defined as below. Keys are optional unless explicitly
@@ -393,12 +393,12 @@ stated. Any unknown keys should be treated as an error.
 
     If a map, it maps language codes to problem names.
 
-    .. literalinclude :: ../examples/problem/icpc/name_map.yaml
+    .. literalinclude :: ../examples/problem/name_map.yaml
         :language: yaml
 
     If a string, it is the problem name in some language.
 
-    .. literalinclude :: ../examples/problem/icpc/name_only.yaml
+    .. literalinclude :: ../examples/problem/name_only.yaml
         :language: yaml
     
 
@@ -698,12 +698,6 @@ It is an error if no such multiple exists.
     limit, and should warn when importing a problem whose time limit is
     specified with precision greater than can be resolved by system timers.
 
-
-
-
-
-
-
 ******************
 Test Data Settings
 ******************
@@ -742,10 +736,10 @@ The following keys can be given in ``testdata.yaml``:
           topology: connected
           bounds: --max_n 50
      
-.. py:data:: grading
+.. py:data:: scoring
     :type: map
 
-    Description of how the results of the group test cases and subgroups should be aggregated. 
+    Description of how the results of the group's test cases and subgroups should scored and aggregated. 
     See :ref:`Testdata Settings for Scoring`.
 
 
@@ -784,32 +778,43 @@ Score of the submission
 Testdata Settings for Scoring
 =============================
 
-For scoring behaviour is configured for each test group by the following flags under ``grading`` in ``testdata.yaml``:
+For scoring behaviour is configured for each test group by the following flags under ``scoring`` in ``testdata.yaml``:
 
 .. py:data:: score
     :type: number
 
     **Default:** 0 in `data/sample`, else 1.
 
-    The score assigned to an accepted test case in the group.
-    If a scoring output validator is used, this score is *multiplied* by the score from the validator.                           
+    In effect, the score assigned to an accepted test case in the group.
+    This value is *multiplied* by the score from the validator.                           
 
 .. py:data:: max_score
     :type: number
 
-    The maximum score allowed for this test group. It is an error to exceed this.
+    Default: ``score``
+    May only be set for problems with a scoring validator.
 
-    **Default:** The sum/mininum of ``score`` and the subresults’ ``max_score`` values, dependinding on if ``score_aggregation`` is ``"sum"``/``"min"``.
+    The maximum score allowed for this test group. 
+    It is an error to exceed this.
 
-.. py:data:: score_aggregation
+    **Default:** The sum/mininum of ``score`` and the subresults’ ``max_score`` values, depending on if ``score_aggregation`` is ``"sum"``/``"min"``.
+
+.. py:data:: aggregation
     :type: "sum" or "min"
 
     **Default:** ``"sum"`` in ``data`` and ``data/secret``, else ``"min"``.
 
-    The score for this test group is the sum of the subresult scores. 
+    The function applied to the scores of the children of this test group to determine its score.
+
+The shorthand ``scoring: number`` means
+
+.. code-block:: yaml
+
+    scoring:
+      score: number
 
 Use Cases
----------
+=========
 
 The defaults are chosen to make some common use cases easy to implement for scoring problems.
 
@@ -829,11 +834,11 @@ Number of passed test cases
     and the default aggregation mode of of `data/secret` adds these values.
     In effect, the submission score will be the *number of passed test cases*.
 
-Subtasks
+Scored Subtasks
     A *scored subtask problem* consists of :math:`k` subtasks (typically restrictions on the full task).
     A submission that passes  test cases in subtask :math:`i` receives :math:`s_i` points.
     For instance, subtask 1 gives 23 points.
-    To that end, organise the test data by placing :math:`k` test groups directly in `data/secret` like this; 
+    To that end, organise the test data by placing :math:`k` test groups below in `data/secret` like this; 
 
     .. code-block:: text
     
@@ -843,30 +848,60 @@ Subtasks
            ├── subtask_1
            │   ├── test case
            │   ├── ...
-           │   └── test case
+           │   └── test group / test case
            ├── ...
            └── subtask_k
                ├── test case
                ├── ...
                └── test case
 
-    and set
+    and set, say,
 
     .. code-block:: yaml
         :caption: `testdata.yaml` in subtask_1
 
-	score: 23
+	scoring: 23
 
     The default aggregation setting ``min`` of ``secret/subtask_1`` ensures that its score is 23 exactly if all its test cases passed, otherwise it is 0.
     The default aggregation setting ``sum`` of ``secret`` adds the scores for every subtask.
    
 
-Fractional scoring
-    To be written. See :ref:`Custom Output Validation`.
+Custom Scoring
+    An output validator can itself determine the score on a subtask, see :ref:`Custom Output Validation`,
+    e.g., an integer between 0 and 100.
+    To use such a “scoring” output validator, organise the test data as for a pass-fail problem:
+
+    .. code-block:: text
     
+        data
+        ├──sample
+        └──secret
+           ├── test case
+           ├── ...
+           └── test group / test case
 
 
-   
+    and override the default aggregation setting in ``secret`` like this:
+
+    .. code-block:: yaml
+        :caption: `testdata.yaml` in test group secret
+
+	scoring: 
+	  aggregation: min
+    
+    In effect, the submission score will be the minimum score over all test cases.
+    In this example, it is recommended to also set ``max_score: 100``.
+
+Fractional Subtask Scoring
+    In another type of scored subtask problem, subtasks again each have a fixed maximum score, 
+    but now the scoring output validator produces fractional score :math:`f` with :math:`0\leq f\leq 1` for each test case.
+
+    For this, organise the test data exactly as for a scored subtask.
+    The default settings will now multiply the output of the scoring output validator  (say, ``0.4``), with the subtask score (say, ``23``),
+    producing a number between 0 and the subtask score (say, ``9.2``).
+    As before, the score of a subtask will be the minimum score of all its test cases,
+    and the submission score will be the sum of the subtasks.
+
 
 .. versionchanged:: 2.0
 
