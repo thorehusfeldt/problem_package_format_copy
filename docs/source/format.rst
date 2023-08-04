@@ -829,7 +829,7 @@ Number of passed test cases
 Scored Subtasks
     A *scored subtask problem* consists of :math:`k` subtasks (typically restrictions on the full task).
     A submission that passes  test cases in subtask :math:`i` receives :math:`s_i` points.
-    For instance, subtask 1 gives 23 points.
+
     To that end, organise the test data by placing :math:`k` test groups below in `data/secret` like this; 
 
     .. code-block:: text
@@ -847,14 +847,16 @@ Scored Subtasks
                ├── ...
                └── test case
 
-    and set, say,
+    If for example, subtask 1 consist of small instances to the problem (say, :math:`m\leq 12`)  and give 23 points,
+    include the following in `secret/subtask_1/testdata.yaml`:
 
     .. code-block:: yaml
         :caption: `testdata.yaml` in subtask_1
 
+	input_validator_flags: --max_m 12
 	scoring: 23
 
-    The default aggregation setting ``min`` of ``secret/subtask_1`` ensures that its score is 23 exactly if all its test cases passed, otherwise it is 0.
+    The default aggregation setting ``min`` of ``secret/subtask_1`` ensures that its score is 23 if all its test cases passed.    If any test case fails, the score is 0.
     The default aggregation setting ``sum`` of ``secret`` adds the scores for every subtask.
    
 
@@ -889,8 +891,8 @@ Fractional Subtask Scoring
     but now the scoring output validator produces fractional score :math:`f` with :math:`0\leq f\leq 1` for each test case.
 
     For this, organise the test data exactly as for a scored subtask.
-    The default settings will now multiply the output of the scoring output validator  (say, ``0.4``), with the subtask score (say, ``23``),
-    producing a number between 0 and the subtask score (say, ``9.2``).
+    The default settings will now multiply the output of the scoring output validator  (say, 0.4), with the subtask score (say, 23),
+    producing a number between 0 and the subtask score (say, 9.2).
     As before, the score of a subtask will be the minimum score of all its test cases,
     and the submission score will be the sum of the subtasks.
 
