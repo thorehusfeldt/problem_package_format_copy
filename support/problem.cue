@@ -1,7 +1,7 @@
 package problem_package
 
 #problem_settings: {
-	name:                    string | close({[#language_code]: string})
+	name!:                    string | close({[#language_code]: string})
 	problem_format_version?: *"legacy" | "draft" | =~"^[0-9]{4}-[0-9]{2}(-draft)?$"
 
 	author?:       #author_information | [...#author_information]
@@ -33,7 +33,7 @@ package problem_package
 #problem_settings
 
 #author_information : string | {
-	name: string
+	name!: string
 	email?: string
 }
 #license_with_rights: "cc0" | "cc by" | "cc by-sa" | "educational" | "permission"
