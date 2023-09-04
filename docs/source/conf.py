@@ -7,7 +7,7 @@ copyright = 'unknown'
 author = 'various'
 
 release = 'draft'
-version = '2.0.0'
+version = '0.9.0'
 
 # -- General configuration
 
@@ -18,6 +18,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'sphinx.ext.autosectionlabel',
+    'myst_parser'
 ]
 
 intersphinx_mapping = {
