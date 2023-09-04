@@ -941,7 +941,7 @@ line parameters and the output stream to validate on stdin.
 
 The validator should be possible to use as follows on the command line:
 
-.. code-block:: sh
+.. code-block:: bash
 
    ./validator input judge_answer feedback_dir [additional_arguments] < team_output [ > team_input ]
 
